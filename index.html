@@ -839,29 +839,36 @@ body.th-soviet .settle h2,body.th-soviet .stats h2,body.th-soviet .dex h3,body.t
 body.th-soviet .glass{color:#E7E0CC}
 body.th-soviet .glass b,body.th-soviet .lead b{color:#FFC98F}
 
-/* 5. 림라이트 블롭 */
-body.th-blob{--bg:#000;--ink:#FFFFFF;--muted:#B9B9C6;--dim:#8A8A96;--grid:rgba(255,255,255,.14);--grid2:rgba(255,255,255,.05);--line:rgba(255,255,255,.16);--hair:rgba(255,255,255,.1);
-  --deep:#FF7A45;--school:#17171E;
-  --T-bgimg:#000;--T-panel:rgba(22,22,28,.94);--T-bd:rgba(255,255,255,.18);--T-card:rgba(22,22,29,.95);--T-cbd:1px solid rgba(255,255,255,.18);--T-sheet:rgba(12,12,16,.96);--T-in:rgba(255,255,255,.09);
-  --T-atext:#FFA985;--T-accent:linear-gradient(90deg,#FFA985,#F2663C);--T-aink:#1A0D07;--T-ash:0 0 22px rgba(255,106,54,.35);
-  --T-run:linear-gradient(rgba(18,18,24,.9),rgba(18,18,24,.9)) padding-box,linear-gradient(135deg,#FFB08A,#FF6A36 28%,#C04BFF 62%,#4C6BFF) border-box;--T-rink:#FFE4D6;
-  --T-rbd:1.5px solid transparent;--T-rsh:0 0 26px rgba(255,106,54,.25),0 0 50px rgba(76,107,255,.18);--T-fixed:linear-gradient(135deg,rgba(76,107,255,.3),rgba(12,12,18,.9) 60%);--T-fink:#E6E9FF;
-  --T-display:"Instrument Serif",serif;--T-knob:#000}
+/* 5. 림라이트 블롭: 검은 공간에 민트·에메랄드와 시안·블루 테두리광 */
+body.th-blob{--bg:#000;--ink:#F4FFFB;--muted:#A9BEBA;--dim:#7C8F8C;--grid:rgba(190,255,235,.12);--grid2:rgba(190,255,235,.04);--line:rgba(190,255,235,.13);--hair:rgba(190,255,235,.08);
+  --deep:#3DEBB0;--school:#0B1315;
+  --T-bgimg:radial-gradient(120% 65% at 95% 0%,#04201B 0%,rgba(4,32,27,0) 62%),radial-gradient(110% 60% at 0% 100%,#050F26 0%,rgba(5,15,38,0) 66%),#000;
+  --T-panel:rgba(12,20,22,.9);--T-bd:rgba(170,255,228,.14);--T-psh:inset 0 1px 0 rgba(190,255,235,.08);
+  --T-card:rgba(11,18,21,.94);--T-cbd:1px solid rgba(170,255,228,.13);--T-csh:inset 0 1px 0 rgba(190,255,235,.06);
+  --T-sheet:rgba(6,12,14,.97);--T-in:rgba(190,255,235,.07);
+  --T-atext:#7FF3CB;--T-accent:linear-gradient(95deg,#9BFFD8,#2EDBA2 45%,#27B6FF);--T-aink:#02140E;--T-ash:0 0 22px rgba(46,219,162,.3),0 0 40px rgba(39,182,255,.12);
+  --T-run:linear-gradient(rgba(8,16,18,.92),rgba(8,16,18,.92)) padding-box,linear-gradient(135deg,#C2FFE9,#2EE6A8 30%,#1FB5FF 66%,#3A5BFF) border-box;--T-rink:#E4FFF5;
+  --T-rbd:1.5px solid transparent;--T-rsh:0 0 24px rgba(46,230,168,.24),0 0 52px rgba(31,140,255,.18);
+  --T-fixed:linear-gradient(135deg,rgba(36,120,255,.26),rgba(8,14,20,.92) 62%);--T-fink:#DCEBFF;
+  --T-display:"Instrument Serif",serif;--T-glow:0 0 18px rgba(70,240,190,.22);--T-knob:#000}
 body.th-blob .blobs i{display:block!important;background:#000!important;animation:none}
-body.th-blob .b1{box-shadow:inset 7px -6px 12px -3px rgba(255,150,95,.95),inset 22px -18px 40px -18px rgba(255,80,35,.6),inset -7px 7px 16px -4px rgba(160,120,255,.9),inset -22px 22px 50px -20px rgba(76,107,255,.45)!important}
-body.th-blob .b2{box-shadow:inset -8px 9px 14px -3px rgba(255,140,80,.95),inset -26px 26px 50px -22px rgba(255,80,30,.55),inset 8px -9px 18px -4px rgba(95,115,255,.95),inset 28px -28px 60px -24px rgba(122,92,255,.45)!important}
-body.th-blob .b3{box-shadow:inset 6px -6px 12px -3px rgba(115,135,255,.95),inset -6px 6px 14px -4px rgba(255,150,100,.6)!important}
-body.th-blob .knob{box-shadow:inset 5px -4px 10px -3px rgba(255,130,70,.95),inset -5px 5px 12px -3px rgba(110,120,255,.9)}
+/* 테두리광: 가는 선명한 빛 + 넓게 번지는 빛 + 바깥 은은한 번짐 */
+body.th-blob .b1{box-shadow:inset 6px -6px 10px -3px rgba(150,255,215,.95),inset 22px -18px 42px -18px rgba(30,215,150,.55),
+  inset -7px 7px 15px -4px rgba(80,195,255,.9),inset -24px 24px 52px -20px rgba(50,100,255,.45),0 0 60px -18px rgba(40,210,170,.3)!important}
+body.th-blob .b2{box-shadow:inset -8px 9px 14px -3px rgba(140,255,210,.92),inset -26px 26px 52px -22px rgba(25,205,145,.5),
+  inset 8px -9px 17px -4px rgba(70,170,255,.95),inset 28px -28px 62px -24px rgba(55,90,255,.45),0 0 70px -20px rgba(40,140,255,.28)!important}
+body.th-blob .b3{box-shadow:inset 6px -6px 12px -3px rgba(90,200,255,.95),inset -6px 6px 14px -4px rgba(120,255,205,.7),0 0 40px -14px rgba(60,200,230,.3)!important}
+body.th-blob .knob{box-shadow:inset 5px -4px 10px -3px rgba(120,255,205,.95),inset -5px 5px 12px -3px rgba(70,160,255,.9),0 0 16px -4px rgba(46,219,162,.35)}
 body.th-blob .knob-cap i{background:#fff}
 /* 블롭 가시성: 배경 빛을 낮추고, 글자·칸 대비를 올림 */
-body.th-blob .blobs{opacity:.55}
-body.th-blob .school{border:1px solid rgba(255,255,255,.14)}
-body.th-blob .school .title{color:#fff}
-body.th-blob .hour span{color:#C8C8D4}
+body.th-blob .blobs{opacity:.62}
+body.th-blob .school{border:1px solid rgba(170,255,228,.12)}
+body.th-blob .school .title{color:#F4FFFB}
+body.th-blob .hour span{color:#BFD3CF}
 body.th-blob .done{opacity:.8}
-body.th-blob .done .title{color:#A9A9B6}
-body.th-blob .meta,body.th-blob .meta .tm{color:#C3C3CF}
-body.th-blob .review{border-color:rgba(255,255,255,.3)}
+body.th-blob .done .title{color:#9DB2AE}
+body.th-blob .meta,body.th-blob .meta .tm{color:#BACECA}
+body.th-blob .review{border-color:rgba(170,255,228,.26)}
 body.th-blob .grip{opacity:.5}
 
 
@@ -1060,7 +1067,7 @@ body.themed .dash>.memobar .mk::before{background:var(--deep)}
 body.themed .blk.done{opacity:1;background:color-mix(in srgb,var(--bg) 55%,transparent);border:1px solid var(--line);box-shadow:none}
 body.themed .blk.done .title{color:var(--muted)}
 body.th-blueprint .dchk{background:#fff;color:#000;box-shadow:none}
-body.th-blob .blk.done .title{color:#A9A9B6}
+body.th-blob .blk.done .title{color:#9DB2AE}
 /* ── 도감 가시성: 원소 칸은 늘 밝은 바탕이라 글자는 테마와 상관없이 진하게 ── */
 .el{color:#141A2A}
 .el.dark{color:#fff}
@@ -1722,7 +1729,7 @@ const THEMES = [
   {id:'blueprint', name:'설계도',          need:'원소 12개',         ok:c => c.size >= 12,          pv:['#000000','#000000','#FFFFFF','#FFFFFF']},
   {id:'te',        name:'틴에이지 엔지니어링', need:'원소 16개',      ok:c => c.size >= 16,          pv:['#D5D8DC','#FFFFFF','#2F6BFF','#15171B']},
   {id:'soviet',    name:'소비에트 펑크',   need:'원소 24개',         ok:c => c.size >= 24,          pv:['#566351','#ECE4CF','#C83A22','#FFC98F']},
-  {id:'blob',      name:'림라이트 블롭',   need:'원소 32개',         ok:c => c.size >= 32,          pv:['#000000','#16161C','#F2663C','#F4F4F6']},
+  {id:'blob',      name:'림라이트 블롭',   need:'원소 32개',         ok:c => c.size >= 32,          pv:['#000000','#0B1315','#2EDBA2','#F4FFFB']},
   {id:'forbidden', name:'금단',            need:'금단 원소 3개',     ok:c => FORB.filter(f => c.has(f.sym)).length >= 3, pv:['#050505','#0E0A0A','#C8170F','#FF2A22']},
   {id:'au',        name:'금박',            need:'금 Au 획득',        ok:c => c.has('Au'),           pv:['#120E08','#19130A','#E9C35E','#F4D57A']},
   {id:'u',         name:'우라늄 유리',     need:'우라늄 U 획득',     ok:c => c.has('U'),            pv:['#050D07','#0C1C0E','#7CFF4E','#DFFFD0']},
