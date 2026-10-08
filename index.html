@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>블록 플래너</title>
+<title>15577</title>
+<meta name="apple-mobile-web-app-title" content="15577">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
@@ -2901,8 +2902,9 @@ statsEl.addEventListener('change', e => {
 
 /* ---------- 업데이트 내역 ----------
    새 버전을 올릴 때 APP_VERSION을 올리고 CHANGELOG 맨 앞에 한 줄 추가 */
-const APP_VERSION = '1.6';
+const APP_VERSION = '1.7';
 const CHANGELOG = [
+  {v:'1.7', d:'2026-10-08', t:'앱 이름을 15577로 변경'},
   {v:'1.6', d:'2026-10-08', t:'새 앱 아이콘: P·La·N 원소 칸으로 쓴 PLaN, 원자번호 15577'},
   {v:'1.5', d:'2026-10-08', t:'결산 맨 아래에 업데이트 내역과 최신 버전 확인 추가'},
   {v:'1.4', d:'2026-10-08', t:'자유 몰입 중에 문풀을 시작해도 몰입 판 수·타이머가 그대로 이어짐'},
@@ -2943,7 +2945,7 @@ function exportData(){
   const txt = JSON.stringify(S);
   try{
     const url = URL.createObjectURL(new Blob([txt], {type:'application/json'}));
-    const a = document.createElement('a'); a.href = url; a.download = `block-planner-${todayKey()}.json`;
+    const a = document.createElement('a'); a.href = url; a.download = `15577-${todayKey()}.json`;
     document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 4000);
   }catch(e){}
   const done = () => toast('내보냈어요. 클립보드에도 복사했어요');
@@ -2953,7 +2955,7 @@ function exportData(){
 function importData(txt){
   let o;
   try{ o = JSON.parse((txt || '').trim()); }catch(e){ return toast('JSON 형식이 아니에요. 전체를 복사했는지 확인해 주세요'); }
-  if(!o || typeof o !== 'object' || Array.isArray(o) || !(o.days || o.cats || o.log)) return toast('블록 플래너 데이터가 아니에요');
+  if(!o || typeof o !== 'object' || Array.isArray(o) || !(o.days || o.cats || o.log)) return toast('15577 데이터가 아니에요');
   const n = Object.keys(o.days || {}).length;
   if(!confirm(`지금 기기의 기록을 가져온 데이터(${n}일치)로 바꿀까요? 되돌릴 수 없어요.`)) return;
   S = normalize(o); save(); render();
