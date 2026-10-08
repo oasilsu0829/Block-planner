@@ -1268,11 +1268,23 @@ function toggleRun(id){
       if(b.startEarly >= 10) toast(`계획보다 ${b.startEarly}분 일찍 시작했어요. 결산에 가산점이 붙어요`);
     }
     b.runningSince = Date.now();
-    if(S.focus && S.focus.id !== id) S.focus = null;
-    if(S.focus && S.focus.phase !== 'focus'){ S.focus.phase = 'focus'; S.focus.t0 = Date.now(); }
+    if(!isLite(b)) adoptFree(id);
+    if(S.focus && !S.focus.free && S.focus.id !== id) S.focus = null;
+    if(S.focus && S.focus.id === id && S.focus.phase !== 'focus'){ S.focus.phase = 'focus'; S.focus.t0 = Date.now(); }
     if(k === todayKey()){ S.session ||= {}; const ss = S.session[k]; if(!ss) S.session[k] = {s:nowMin(), auto:true}; else if(ss.auto && ss.e != null) delete ss.e; }
   }
   commit(k, id); save(); render();
+}
+/* 자유 집중 중에 블록을 시작하면 세션을 버리지 않고 그 블록이 이어받음.
+   지금 판에서 자유로 보낸 분은 자유 집중 시간에 넣고, 판 수·타이머는 그대로 이어감 */
+function adoptFree(id){
+  const F = S.focus; if(!F || !F.free) return;
+  if(F.phase === 'focus'){
+    const m = Math.floor((Date.now() - F.t0)/60000);
+    if(m > 0){ S.freeMin ||= {}; const t = todayKey(); S.freeMin[t] = (S.freeMin[t] || 0) + m; }
+    if(F.awayAt){ F.cAway = (F.cAway || 0) + (Date.now() - F.awayAt); F.awayAt = null; }
+  }
+  delete F.free; delete F.awayMs; F.id = id;
 }
 function complete(id, actual){
   const {b, k} = findB(id); if(!b) return;
@@ -3012,6 +3024,7 @@ function openFocus(id, free){
     if(!b) return openFocus(null, true);
   }
   if(isLite(b) || b.done) return;
+  adoptFree(b.id);
   if(!S.focus || S.focus.id !== b.id) S.focus = {id:b.id, phase:'focus', t0:Date.now(), n:0};
   if(!b.runningSince && S.focus.phase === 'focus') toggleRun(b.id);
   focusSig = ''; focusEl.hidden = false; document.body.classList.add('sheet-open');
