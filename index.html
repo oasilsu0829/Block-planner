@@ -11,6 +11,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Noto+Serif+KR:wght@400;600;900&family=IBM+Plex+Sans+KR:wght@400;500;600&family=Share+Tech+Mono&family=Great+Vibes&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -1112,6 +1113,169 @@ body.th-soviet .dcard.off b{color:#B8B09A}
 body.th-soviet .dcard small em{color:#B8B09A}
 body.th-soviet .dex-head .cnt,body.th-soviet .dex-head .cnt b{color:#E7E0CC}
 
+/* ════════ 기본 테마: 리퀴드 글라스 ════════
+   투명한 유리 + 가장자리 빛(림) + 뒤 색을 끌어올리는 블러. 다른 테마는 건드리지 않게 body:not(.themed)로만 */
+body:not(.themed){
+  --bg:#EEF1F7; --paper:#EEF1F7; --ink:#1C1C1E; --muted:#6C6C72; --dim:#8E8E93;
+  --pb:#8DBBFF; --pb-hi:#D6E7FF; --pb-lo:#3D8BFF; --pb-ink:#0A5FD6; --lav:#C9B8FF;
+  --deep:#007AFF; --now:#FF3B30; --accent:#007AFF; --card:rgba(255,255,255,.72);
+  --grid:rgba(60,60,67,.11); --grid2:rgba(60,60,67,.035); --line:rgba(60,60,67,.11); --hair:rgba(0,0,0,.045);
+  --school:rgba(255,255,255,.46); --edge:rgba(255,255,255,.62); --edge-2:rgba(60,60,67,.12);
+  --sans:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"SF Pro Text","Apple SD Gothic Neo","IBM Plex Sans KR",system-ui,sans-serif;
+  --num:var(--sans); --display:var(--sans); --serif:var(--sans);
+  /* 유리 재질 */
+  --lg-fill:rgba(255,255,255,.34);
+  --lg-sheen:linear-gradient(180deg,rgba(255,255,255,.42),rgba(255,255,255,.06) 46%,rgba(255,255,255,.16));
+  --lg-blur:blur(16px) saturate(200%) brightness(1.05);
+  --lg-rim:inset 0 0 0 1px rgba(255,255,255,.42),inset 1.5px 1.5px 1px -1px rgba(255,255,255,.95),inset -1.5px -1.5px 1px -1px rgba(255,255,255,.7),inset 0 0 14px rgba(255,255,255,.28);
+  --lg-drop:0 1px 2px rgba(20,28,48,.05),0 10px 30px rgba(20,28,48,.10);
+  /* 파랑으로 물든 유리 */
+  --lg-tint:linear-gradient(180deg,rgba(255,255,255,.30),rgba(255,255,255,0) 55%),linear-gradient(180deg,#2E8BFF,#0A6CF5);
+  --lg-tint-sh:inset 0 1px 0 rgba(255,255,255,.55),inset 0 -1px 0 rgba(0,40,120,.18),inset 0 0 0 1px rgba(255,255,255,.18),0 8px 22px rgba(0,110,255,.32);
+  --glass:var(--lg-fill); --hl:var(--lg-rim); --sh:var(--lg-drop); --blur:var(--lg-blur);
+  font-family:var(--sans);letter-spacing:-.01em;-webkit-font-smoothing:antialiased;
+}
+/* 바탕: 유리 뒤로 비칠 부드러운 색 덩어리 */
+body:not(.themed) .blobs{background:
+  radial-gradient(60% 38% at 92% 4%,rgba(120,170,255,.55),transparent 70%),
+  radial-gradient(55% 34% at 4% 30%,rgba(205,180,255,.45),transparent 70%),
+  radial-gradient(60% 36% at 100% 62%,rgba(140,225,215,.38),transparent 70%),
+  radial-gradient(55% 32% at 10% 96%,rgba(255,196,170,.40),transparent 70%),
+  linear-gradient(180deg,#F4F6FB,#ECEFF6)}
+
+/* 유리 공통: 패널·버튼 */
+body:not(.themed) .glass,body:not(.themed) .lg,body:not(.themed) .icon,body:not(.themed) .ledbox,body:not(.themed) .seg,
+body:not(.themed) .bar,body:not(.themed) .dash,body:not(.themed) .toast,body:not(.themed) .dday.none{
+  background:var(--lg-sheen),var(--lg-fill);border:1px solid rgba(255,255,255,.5);
+  box-shadow:var(--lg-rim),var(--lg-drop);-webkit-backdrop-filter:var(--lg-blur);backdrop-filter:var(--lg-blur)}
+
+/* ── 상단 ── */
+body:not(.themed) .nixie{font-weight:700;font-size:44px;letter-spacing:-.045em;line-height:1;font-variant-numeric:tabular-nums}
+body:not(.themed) .date small{font-weight:500;letter-spacing:0}
+body:not(.themed) .date small em{color:var(--deep);font-weight:600}
+body:not(.themed) .icon{width:36px;height:36px;font-size:20px;color:var(--ink)}
+body:not(.themed) .seg{padding:3px}
+body:not(.themed) .seg button{font-weight:500;color:var(--muted);transition:background .25s,color .25s}
+body:not(.themed) .seg button[aria-selected="true"]{color:var(--ink);font-weight:600;
+  background:linear-gradient(180deg,#fff,rgba(255,255,255,.82));box-shadow:inset 0 0 0 .5px rgba(0,0,0,.04),0 2px 8px rgba(20,28,48,.12),0 1px 1px rgba(20,28,48,.06)}
+body:not(.themed) .dday{border:1px solid rgba(255,255,255,.5);color:var(--deep);
+  background:var(--lg-sheen),rgba(0,122,255,.10);box-shadow:var(--lg-rim),var(--lg-drop);-webkit-backdrop-filter:var(--lg-blur);backdrop-filter:var(--lg-blur)}
+body:not(.themed) .dday b{font-weight:700;font-size:18px;letter-spacing:-.03em}
+body:not(.themed) .dday.soon{color:#fff;border-color:rgba(255,255,255,.3);background:var(--lg-tint);box-shadow:var(--lg-tint-sh)}
+body:not(.themed) .dday.none{color:var(--muted)}
+
+/* ── 상태판 ── */
+body:not(.themed) .dash{border-radius:22px}
+body:not(.themed) .dash>.memobar{background:linear-gradient(90deg,rgba(255,214,10,.14),transparent 70%)}
+body:not(.themed) .dash>.memobar .mk{color:#A07800}
+body:not(.themed) .dash>.memobar .mk::before{background:#FFCC00}
+body:not(.themed) .sessbar button{color:var(--deep);background:rgba(0,122,255,.12);box-shadow:none}
+body:not(.themed) .nowbar .dot.on,body:not(.themed) .sessbar .dot{box-shadow:0 0 0 4px rgba(0,122,255,.16)}
+
+/* ── 타임라인 ── */
+body:not(.themed) .hour span{font-weight:500;color:var(--dim);font-size:12px}
+body:not(.themed) .now{height:2px;border-radius:1px;background:linear-gradient(90deg,var(--now),rgba(255,59,48,.15))}
+body:not(.themed) .now::before{left:-4px;top:-3.5px;width:9px;height:9px;box-shadow:0 0 0 3px rgba(255,59,48,.18)}
+body:not(.themed) .blk{border-radius:18px;border:1px solid rgba(255,255,255,.7);
+  background:linear-gradient(100deg,color-mix(in srgb,var(--c) 14%,transparent),transparent 50%),linear-gradient(180deg,rgba(255,255,255,.88),rgba(255,255,255,.7));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 0 0 .5px rgba(255,255,255,.6),0 0 0 .5px rgba(0,0,0,.04),0 2px 4px rgba(20,28,48,.04),0 8px 22px rgba(20,28,48,.07)}
+body:not(.themed) .blk::before{box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 18%,transparent)}
+body:not(.themed) .blk.dragging{box-shadow:var(--lg-rim),0 22px 48px rgba(20,28,48,.22);transform:scale(1.01)}
+body:not(.themed) .title{letter-spacing:-.02em}
+body:not(.themed) .blk.running{color:#fff;border:1px solid rgba(255,255,255,.32);background:linear-gradient(135deg,rgba(255,255,255,.26),transparent 42%),var(--lg-tint);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.55),inset 0 0 0 1px rgba(255,255,255,.14),0 0 0 4px rgba(0,122,255,.14),0 14px 34px rgba(0,110,255,.36)}
+body:not(.themed) .blk.running::before{box-shadow:0 0 0 3px rgba(255,255,255,.3)}
+body:not(.themed) .running .act{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.35);color:#fff}
+body:not(.themed) .running .act.on{background:#fff;color:var(--deep)}
+body:not(.themed) .blk.school{border-radius:14px;background:var(--school);border:1px solid rgba(255,255,255,.6);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.8),0 0 0 .5px rgba(0,0,0,.035)}
+body:not(.themed) .school .per{color:var(--ink);background:rgba(255,255,255,.9);box-shadow:0 0 0 1.5px var(--c),0 1px 3px rgba(20,28,48,.1)}
+body:not(.themed) .blk.school.cur{background:rgba(255,255,255,.86);box-shadow:inset 0 1px 0 #fff,0 0 0 1.5px var(--deep),0 8px 22px rgba(0,122,255,.18)}
+body:not(.themed) .blk.school.jaseup{background:repeating-linear-gradient(135deg,transparent 0 7px,rgba(0,122,255,.05) 7px 14px),rgba(255,255,255,.3);
+  border:1px solid rgba(0,122,255,.3);box-shadow:none}
+body:not(.themed) .school.jaseup .title,body:not(.themed) .jtag{color:var(--deep)}
+body:not(.themed) .blk.fixed{color:#F2F2F7;border:1px solid rgba(255,255,255,.14);
+  background:linear-gradient(180deg,rgba(255,255,255,.1),transparent 50%),rgba(36,40,54,.86);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 10px 26px rgba(20,28,48,.22)}
+body:not(.themed) .fixed::before{background:#64D2FF;box-shadow:0 0 0 3px rgba(100,210,255,.22)}
+body:not(.themed) .fixed .meta{color:rgba(235,235,245,.62)}
+body:not(.themed) .blk.meal{background:repeating-linear-gradient(135deg,transparent 0 9px,rgba(255,149,0,.07) 9px 18px),rgba(255,248,238,.78);border:1px solid rgba(255,149,0,.3);box-shadow:none}
+body:not(.themed) .blk.done{background:rgba(255,255,255,.36);border:1px solid rgba(255,255,255,.55);box-shadow:0 0 0 .5px rgba(0,0,0,.035)}
+body:not(.themed) .act{background:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.75);color:var(--deep);
+  box-shadow:inset 0 1px 0 #fff,0 1px 2px rgba(20,28,48,.08),0 3px 8px rgba(20,28,48,.06)}
+body:not(.themed) .act.on,body:not(.themed) .act.chk.on,body:not(.themed) .act.lp.full{color:#fff;border-color:transparent;background:var(--lg-tint);box-shadow:var(--lg-tint-sh)}
+body:not(.themed) .meta .tag{background:color-mix(in srgb,var(--c) 13%,rgba(255,255,255,.7))}
+body:not(.themed) .brk span{background:rgba(255,255,255,.7);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+
+/* ── 하단 바: 떠 있는 유리 캡슐 ── */
+body:not(.themed) .bar{padding:6px;gap:6px;border-radius:30px;box-shadow:var(--lg-rim),0 2px 6px rgba(20,28,48,.06),0 18px 44px rgba(20,28,48,.16)}
+body:not(.themed) .key{border-radius:24px;border:1px solid rgba(255,255,255,.55);background:rgba(255,255,255,.42);color:var(--ink);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 1px 3px rgba(20,28,48,.06);transition:transform .18s cubic-bezier(.3,1.6,.5,1),background .2s}
+body:not(.themed) .key:active{transform:scale(.94)}
+body:not(.themed) .key b{font-weight:500}
+body:not(.themed) .key-bk b,body:not(.themed) .key-iv b,body:not(.themed) .key.on-focus{color:var(--deep)}
+body:not(.themed) .key-red{color:#fff;border-color:rgba(255,255,255,.28);background:var(--lg-tint);box-shadow:var(--lg-tint-sh)}
+body:not(.themed) .knob{background:radial-gradient(90% 80% at 32% 24%,#fff,rgba(255,255,255,.75) 55%,rgba(220,230,250,.7));
+  box-shadow:inset 0 1px 0 #fff,inset 0 0 0 1px rgba(255,255,255,.6),0 6px 16px rgba(20,28,48,.14)}
+body:not(.themed) .knob-cap i{background:var(--deep)}
+
+/* ── 시트: 두꺼운 유리 ── */
+body:not(.themed) .scrim{background:rgba(30,36,52,.16);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
+body:not(.themed) .sheet{border-radius:34px;border:1px solid rgba(255,255,255,.55);
+  background:linear-gradient(180deg,rgba(255,255,255,.5),rgba(255,255,255,.2) 40%,rgba(255,255,255,.32)),rgba(246,248,252,.52);
+  -webkit-backdrop-filter:blur(30px) saturate(210%) brightness(1.04);backdrop-filter:blur(30px) saturate(210%) brightness(1.04);
+  box-shadow:var(--lg-rim),0 2px 8px rgba(20,28,48,.06),0 30px 80px rgba(20,28,48,.22);animation:lgUp .42s cubic-bezier(.22,1.25,.36,1)}
+@keyframes lgUp{from{transform:translateY(40px) scale(.97);opacity:0}to{transform:none;opacity:1}}
+body:not(.themed) .sh-head h2,body:not(.themed) .dex-head h2,body:not(.themed) .stats h2{font-weight:700;letter-spacing:-.03em}
+body:not(.themed) .sh-head h2{font-size:22px}
+body:not(.themed) .in{border:0;border-radius:14px;background:rgba(118,118,128,.1);box-shadow:inset 0 0 0 1px rgba(255,255,255,.45)}
+body:not(.themed) .in:focus{background:rgba(255,255,255,.75);box-shadow:0 0 0 3px rgba(0,122,255,.3)}
+body:not(.themed) .chip,body:not(.themed) .ghost,body:not(.themed) .stepper button,body:not(.themed) .timer-row button,body:not(.themed) .pick button,body:not(.themed) .selfbtn,body:not(.themed) .hint{
+  background:var(--lg-sheen),rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.6);box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 1px 3px rgba(20,28,48,.05),0 4px 12px rgba(20,28,48,.05)}
+body:not(.themed) .stepper button,body:not(.themed) .selfbtn{color:var(--deep)}
+body:not(.themed) .pick button{border-radius:22px}
+body:not(.themed) .pick i{color:var(--deep);opacity:1}
+body:not(.themed) .chip.add{background:transparent;border:1px dashed rgba(60,60,67,.2);box-shadow:none}
+body:not(.themed) .chip[aria-pressed="true"],body:not(.themed) .primary,body:not(.themed) .hint button,body:not(.themed) .selfbtn.on,
+body:not(.themed) .pick button:first-child{color:#fff;border-color:rgba(255,255,255,.28);background:var(--lg-tint);box-shadow:var(--lg-tint-sh)}
+body:not(.themed) .pick button:first-child i{color:#fff}
+body:not(.themed) .primary{transition:transform .18s cubic-bezier(.3,1.6,.5,1)}
+body:not(.themed) .primary:active,body:not(.themed) .ghost:active,body:not(.themed) .pick button:active{transform:scale(.97)}
+body:not(.themed) .danger{color:#FF3B30;background:rgba(255,59,48,.08);border:1px solid rgba(255,59,48,.2)}
+body:not(.themed) .danger.arm{color:#fff;background:#FF3B30;border-color:transparent}
+body:not(.themed) .textbtn{color:var(--deep)}
+body:not(.themed) .dialset .disc{fill:rgba(255,255,255,.6);stroke:rgba(255,255,255,.9)}
+body:not(.themed) .dialset .thumb{stroke:var(--deep)}
+body:not(.themed) .dial-mid output,body:not(.themed) .stepper output{font-weight:600;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+body:not(.themed) .swatches{background:rgba(255,255,255,.4);border-color:rgba(255,255,255,.6)}
+
+/* ── 결산·기록·도감 ── */
+body:not(.themed) .glass{border-radius:22px}
+body:not(.themed) .dval,body:not(.themed) .lead b,body:not(.themed) .dex-head .cnt b,body:not(.themed) .rcpt .tot b{font-weight:700;letter-spacing:-.045em}
+body:not(.themed) .tier,body:not(.themed) .fin{color:var(--deep)}
+body:not(.themed) .meter i,body:not(.themed) .cmp{background:rgba(120,120,128,.14)}
+body:not(.themed) .cmp .a{background:linear-gradient(90deg,#64D2FF,var(--deep))}
+body:not(.themed) .prog{background:rgba(118,118,128,.12)}
+body:not(.themed) .prog button[aria-pressed="true"]{color:var(--ink);background:#fff;box-shadow:0 2px 6px rgba(20,28,48,.12)}
+body:not(.themed) .prog button:last-child[aria-pressed="true"]{color:#fff;background:var(--lg-tint)}
+body:not(.themed) .el .sym,body:not(.themed) .mini-els i{font-weight:600;letter-spacing:-.03em}
+body:not(.themed) .xfer button,body:not(.themed) .xfer label,body:not(.themed) .upd .chk{background:rgba(255,255,255,.5);border-color:rgba(255,255,255,.7);box-shadow:inset 0 1px 0 #fff,0 1px 3px rgba(20,28,48,.06)}
+body:not(.themed) .xfer button.go,body:not(.themed) .upd .chk.go{color:#fff;border-color:transparent;background:var(--lg-tint);box-shadow:var(--lg-tint-sh)}
+body:not(.themed) .xfer textarea{background:rgba(118,118,128,.1);border-color:transparent}
+body:not(.themed) .new{background:#FF3B30}
+body:not(.themed) .mchk[aria-pressed="true"]{background:var(--deep)}
+
+/* ── 몰입 화면: 가는 SF 숫자 ── */
+body:not(.themed) .fx-mid output{font-family:var(--sans);font-weight:200;letter-spacing:-.05em}
+body:not(.themed) .fx-btns button{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.16);
+  -webkit-backdrop-filter:blur(16px) saturate(180%);backdrop-filter:blur(16px) saturate(180%);box-shadow:inset 0 1px 0 rgba(255,255,255,.14)}
+body:not(.themed) .fx-btns button.pri{background:#fff;color:#000}
+
+/* 투명도 줄이기 설정을 켠 경우 불투명하게 */
+@media (prefers-reduced-transparency: reduce){
+  body:not(.themed){--lg-fill:rgba(250,250,252,.96)}
+  body:not(.themed) .sheet{background:#F6F7FA}
+}
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -1905,7 +2069,7 @@ function ptPos(z){
 }
 /* ── 테마 ── */
 const THEMES = [
-  {id:'default',   name:'파스텔 글라스',   need:'기본',              ok:() => true,                 pv:['#F6F8FC','#FFFFFF','#A9C1FF','#141A2A']},
+  {id:'default',   name:'리퀴드 글라스',   need:'기본',              ok:() => true,                 pv:['#E6ECF8','#FFFFFF','#0A84FF','#1C1C1E']},
   {id:'crt',       name:'하얀 CRT',        need:'원소 8개',          ok:c => c.size >= 8,           pv:['#EBEFF5','#FFFFFF','#2B59C3','#1B2233']},
   {id:'blueprint', name:'설계도',          need:'원소 12개',         ok:c => c.size >= 12,          pv:['#000000','#000000','#FFFFFF','#FFFFFF']},
   {id:'te',        name:'틴에이지 엔지니어링', need:'원소 16개',      ok:c => c.size >= 16,          pv:['#D5D8DC','#FFFFFF','#2F6BFF','#15171B']},
@@ -3059,8 +3223,9 @@ statsEl.addEventListener('change', e => {
 
 /* ---------- 업데이트 내역 ----------
    새 버전을 올릴 때 APP_VERSION을 올리고 CHANGELOG 맨 앞에 한 줄 추가 */
-const APP_VERSION = '1.8';
+const APP_VERSION = '1.9';
 const CHANGELOG = [
+  {v:'1.9', d:'2026-10-09', t:'기본 테마를 애플 리퀴드 글라스 스타일로 새로 디자인 (투명한 유리 패널, 파란 강조색, Pretendard 글꼴)'},
   {v:'1.8', d:'2026-10-09', t:'온라인 저장: ID로 연결하면 기기끼리 자동 동기화, 보기 링크로 친구에게 공유'},
   {v:'1.7', d:'2026-10-08', t:'앱 이름을 15577로 변경'},
   {v:'1.6', d:'2026-10-08', t:'새 앱 아이콘: P·La·N 원소 칸으로 쓴 PLaN, 원자번호 15577'},
