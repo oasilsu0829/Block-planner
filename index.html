@@ -1433,7 +1433,7 @@ async function initSync(){
 /* ---------- 온라인 저장 (ID) ----------
    Firestore REST로 planners/{ID} 문서 하나에 S 전체를 JSON 문자열로 저장.
    비밀번호 없이 ID만으로 읽고 씀. 같은 ID를 넣은 기기끼리 updatedAt이 최신인 쪽으로 맞춤 */
-const CLOUD = {projectId:'', apiKey:''};
+const CLOUD = {projectId:'p15577', apiKey:'AIzaSyCMxJrxsFFEh9A9gDmbT4_rda9XLo8JgPE'};
 const CLOUD_KEY = 'bp.cloudId', ID_RE = /^[a-z0-9_-]{3,24}$/;
 let cloudId = null, cloudAt = 0, cloudDirty = false, cloudBusy = false, cloudErr = '', cloudPending = null, cloudT = null;
 try{ if(!VIEW_ID) cloudId = localStorage.getItem(CLOUD_KEY); }catch(e){}
