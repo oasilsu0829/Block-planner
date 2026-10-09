@@ -635,6 +635,19 @@ button.dcard{border:0;background:transparent;padding:0;font:inherit;color:inheri
 .xfer button.go{background:var(--pb);border-color:var(--pb-lo);color:var(--pb-ink)}
 .xfer textarea{width:100%;box-sizing:border-box;height:120px;margin:12px 0 8px;padding:10px 12px;border-radius:14px;border:1px solid var(--edge-2);
   background:var(--card);color:var(--ink);font:12px/1.5 ui-monospace,Menlo,monospace;resize:vertical}
+.xfer .in{margin:0 0 10px;box-sizing:border-box}
+.xfer .cid{font-family:var(--num);font-weight:600;color:var(--deep)}
+.xfer .st{font-size:12.5px;color:var(--muted);margin:6px 0 12px}
+.xfer .sub{margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.xfer .row+.row{margin-top:8px}
+body.viewing #bar{display:none!important}
+.viewbar{position:fixed;left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:30;display:flex;align-items:center;gap:10px;
+  padding:10px 10px 10px 18px;border-radius:999px;background:var(--glass);border:1px solid var(--edge);box-shadow:var(--hl),var(--sh);
+  -webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);font-size:13.5px}
+.viewbar span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.viewbar button{flex:none;height:36px;padding:0 14px;border-radius:999px;border:0;background:var(--pb);color:var(--pb-ink);font:inherit;font-weight:600}
+body.themed .viewbar{background:var(--T-panel);border-color:var(--T-bd);box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;color:var(--ink)}
+body.themed .viewbar button{background:var(--T-accent);color:var(--T-aink)}
 .upd{margin-top:14px;padding:16px 18px;border-radius:22px}
 .upd .hd{display:flex;align-items:center;gap:8px}
 .upd .hd b{font-size:14px;flex:1}
@@ -1156,6 +1169,8 @@ body.th-soviet .dex-head .cnt,body.th-soviet .dex-head .cnt b{color:#E7E0CC}
 (function(){
 let PX = 1.8; try{ const z = +localStorage.getItem('blockplanner.zoom'); if(z >= 1.2 && z <= 3.2) PX = z; }catch(e){}
 const SNAP = 5, DAY_START = 6*60, LS = 'blockplanner.v1';
+/* ?view=ID 로 열면 그 ID의 온라인 기록을 읽기 전용으로 보여 줌 (이 기기 기록은 건드리지 않음) */
+const VIEW_ID = (() => { try{ const v = new URLSearchParams(location.search).get('view'); return v && /^[a-z0-9_-]{3,24}$/.test(v) ? v : null; }catch(e){ return null; } })();
 const PALETTE = ['#3E6FD8','#1E9E7A','#C2457A','#8A5CD1','#D9822B','#2A9BB8','#7A8699','#B5832E'];
 const WEEK = ['일','월','화','수','목','금','토'];
 const CYR = ['ВС','ПН','ВТ','СР','ЧТ','ПТ','СБ'];
@@ -1221,6 +1236,7 @@ function normalize(s){
 function loadLocal(){ try{ const r = localStorage.getItem(LS); return r ? normalize(JSON.parse(r)) : null; }catch(e){ return null; } }
 
 let S = loadLocal() || normalize(null);
+if(VIEW_ID) S = normalize(null);
 let cur = todayKey(), view = 'plan', drag = null, SH = null, remoteRef = null, syncOn = false;
 
 /* ---------- model ---------- */
@@ -1359,7 +1375,7 @@ function prune(){
   if(S.freeMin) for(const k in S.freeMin) if(k < cut) delete S.freeMin[k];
   if(S.log.length > 1500) S.log.length = 1500;
 }
-function localSave(){ try{ localStorage.setItem(LS, JSON.stringify(S)); }catch(e){} }
+function localSave(){ if(VIEW_ID) return; try{ localStorage.setItem(LS, JSON.stringify(S)); }catch(e){} }
 function save(){
   S.updatedAt = Date.now();
   const before = S.ledger ? collectedSet() : null;
@@ -1381,7 +1397,7 @@ function save(){
     if(nt.length){ S.themeNew ||= {}; nt.forEach(x => S.themeNew[x] = 1);
       const t = THEMES.find(x => x.id === nt[0]); setTimeout(() => toast(`새 테마 해금: ${t.name}. 결산에서 바꿀 수 있어요`), 3600); }
   }
-  prune(); localSave();
+  prune(); localSave(); cloudQueue();
   if(remoteRef){ clearTimeout(saveTimer); saveTimer = setTimeout(pushRemote, 900); }
 }
 function pushRemote(){
@@ -1412,6 +1428,145 @@ async function initSync(){
     }, () => {});
     if(view === 'stats') render();
   }catch(e){}
+}
+
+/* ---------- 온라인 저장 (ID) ----------
+   Firestore REST로 planners/{ID} 문서 하나에 S 전체를 JSON 문자열로 저장.
+   비밀번호 없이 ID만으로 읽고 씀. 같은 ID를 넣은 기기끼리 updatedAt이 최신인 쪽으로 맞춤 */
+const CLOUD = {projectId:'', apiKey:''};
+const CLOUD_KEY = 'bp.cloudId', ID_RE = /^[a-z0-9_-]{3,24}$/;
+let cloudId = null, cloudAt = 0, cloudDirty = false, cloudBusy = false, cloudErr = '', cloudPending = null, cloudT = null;
+try{ if(!VIEW_ID) cloudId = localStorage.getItem(CLOUD_KEY); }catch(e){}
+const cloudOn = () => !!(CLOUD.projectId && CLOUD.apiKey);
+const cloudUrl = id => `https://firestore.googleapis.com/v1/projects/${CLOUD.projectId}/databases/(default)/documents/planners/${id}?key=${CLOUD.apiKey}`;
+async function cloudGet(id){
+  const r = await fetch(cloudUrl(id), {cache:'no-store'});
+  if(r.status === 404) return null;
+  if(!r.ok) throw new Error('get ' + r.status);
+  const f = (await r.json()).fields || {};
+  return f.data ? JSON.parse(f.data.stringValue) : null;
+}
+async function cloudPut(id, data){
+  const body = {fields:{data:{stringValue:JSON.stringify(data)}, updatedAt:{integerValue:String(data.updatedAt || 0)}}};
+  const r = await fetch(cloudUrl(id), {method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
+  if(!r.ok) throw new Error('put ' + r.status);
+}
+function cloudQueue(){
+  if(!cloudId || VIEW_ID || !cloudOn()) return;
+  cloudDirty = true; clearTimeout(cloudT); cloudT = setTimeout(cloudPush, 1500); paintCloud();
+}
+async function cloudPush(){
+  if(!cloudId || !cloudDirty || cloudBusy) return;
+  cloudBusy = true; cloudDirty = false; paintCloud();
+  try{ await cloudPut(cloudId, clone(S)); cloudAt = Date.now(); cloudErr = ''; }
+  catch(e){ cloudDirty = true; cloudErr = '온라인 저장 실패'; }
+  cloudBusy = false; paintCloud();
+  if(cloudDirty && !cloudErr){ clearTimeout(cloudT); cloudT = setTimeout(cloudPush, 1500); }
+}
+/* 온라인 쪽이 더 새로우면 받아 오고, 이 기기 쪽이 더 새로우면 올림 */
+async function cloudPull(){
+  if(!cloudOn() || cloudBusy) return;
+  const id = VIEW_ID || cloudId; if(!id) return;
+  if(!VIEW_ID && cloudDirty) return cloudPush();
+  try{
+    const r = await cloudGet(id); cloudErr = '';
+    if(VIEW_ID){
+      if(!r){ cloudErr = 'none'; render(); toast(`'${VIEW_ID}'로 저장된 기록이 없어요`); return; }
+      if((r.updatedAt || 0) !== (S.updatedAt || 0)){ S = normalize(r); S.focus = null; render(); }
+    } else if(r && (r.updatedAt || 0) > (S.updatedAt || 0)){
+      if(drag || SH) return;
+      S = normalize(r); localSave(); render();
+    } else if(!r || (S.updatedAt || 0) > (r.updatedAt || 0)){ cloudDirty = true; return cloudPush(); }
+    cloudAt = Date.now();
+  }catch(e){ cloudErr = '연결 실패'; }
+  paintCloud();
+}
+async function cloudConnect(raw){
+  const id = (raw || '').trim().toLowerCase();
+  if(!ID_RE.test(id)) return toast('ID는 영어 소문자·숫자·-·_ 로 3~24자예요');
+  if(!cloudOn()) return toast('온라인 저장 서버가 아직 설정되지 않았어요');
+  let r;
+  try{ r = await cloudGet(id); }catch(e){ return toast('연결하지 못했어요. 인터넷을 확인해 주세요'); }
+  if(r){ cloudPending = {id, r}; return render(); }
+  await cloudUse(id, false);
+}
+async function cloudUse(id, useRemote){
+  const r = cloudPending && cloudPending.r; cloudPending = null;
+  if(useRemote && r){ S = normalize(r); localSave(); }
+  cloudId = id; try{ localStorage.setItem(CLOUD_KEY, id); }catch(e){}
+  if(!useRemote){ S.updatedAt = Date.now(); localSave(); cloudDirty = true; await cloudPush(); }
+  else cloudAt = Date.now();
+  render();
+  toast(cloudErr ? '연결했지만 저장에 실패했어요. 잠시 후 다시 시도해요' : useRemote ? `'${id}'의 온라인 기록을 가져왔어요` : `'${id}'로 온라인 저장을 시작했어요`);
+}
+function cloudOff(){
+  if(!confirm(`'${cloudId}' 연결을 끊을까요? 이 기기 기록은 그대로 남고, 온라인 기록도 지워지지 않아요.`)) return;
+  cloudId = null; cloudDirty = false; clearTimeout(cloudT);
+  try{ localStorage.removeItem(CLOUD_KEY); }catch(e){}
+  render(); toast('연결을 끊었어요. 이제 이 기기에만 저장돼요');
+}
+const shareUrl = id => location.origin + location.pathname + '?view=' + id;
+async function cloudShare(){
+  const url = shareUrl(cloudId);
+  try{ if(navigator.share){ await navigator.share({title:'15577', text:`내 15577 기록 (ID ${cloudId})`, url}); return; } }catch(e){ if(e && e.name === 'AbortError') return; }
+  try{ await navigator.clipboard.writeText(url); toast('보기 링크를 복사했어요'); }catch(e){ prompt('이 링크를 복사해 보내세요', url); }
+}
+function cloudStatus(){
+  if(cloudErr) return cloudErr + '. 인터넷이 연결되면 다시 시도해요';
+  if(cloudBusy) return '저장 중…';
+  if(cloudDirty) return '곧 저장해요';
+  return cloudAt ? `동기화됨 ${new Date(cloudAt).toTimeString().slice(0, 5)}` : '연결됨';
+}
+function paintCloud(){ const el = document.getElementById('cloudSt'); if(el) el.textContent = cloudStatus(); }
+function cloudHTML(){
+  if(VIEW_ID) return `<div class="xfer glass"><b>친구 기록 보는 중</b>
+    <p>${cloudErr === 'none' ? `ID <span class="cid">${VIEW_ID}</span>로 저장된 기록이 없어요. ID를 다시 확인해 주세요.` : cloudErr ? '기록을 불러오지 못했어요. 인터넷을 확인해 주세요.' : `ID <span class="cid">${VIEW_ID}</span>의 온라인 기록이에요. 1분마다 새로 불러와요. 여기서 고친 내용은 저장되지 않아요.`}</p>
+    <div class="row"><button data-cloud="home">내 기록으로 돌아가기</button></div></div>`;
+  const view = `<div class="sub"><b>친구 기록 보기</b><p>친구의 ID를 넣으면 친구 기록을 읽기 전용으로 볼 수 있어요.</p>
+    <input class="in" id="viewIn" placeholder="친구 ID" autocapitalize="off" autocomplete="off" spellcheck="false"><div class="row"><button data-cloud="view">보기</button></div></div>`;
+  let main;
+  if(!cloudOn()) main = `<p>온라인 저장 서버를 설정하는 중이에요. 곧 쓸 수 있어요.</p>`;
+  else if(cloudPending){
+    const r = cloudPending.r, n = Object.keys(r.days || {}).length;
+    const when = r.updatedAt ? new Date(r.updatedAt).toLocaleString('ko-KR', {month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit'}) : '';
+    main = `<p>ID <span class="cid">${cloudPending.id}</span>에 이미 기록이 있어요 (${n}일치${when ? `, ${when} 수정` : ''}). 어느 쪽을 쓸까요?</p>
+      <div class="row"><button class="go" data-cloud="pull">온라인 기록 가져오기</button></div>
+      <div class="row"><button data-cloud="push">이 기기 기록으로 덮어쓰기</button><button data-cloud="cancel">취소</button></div>`;
+  }
+  else if(cloudId) main = `<p>ID <span class="cid">${cloudId}</span>로 온라인에 저장 중이에요. 다른 기기에서 같은 ID로 연결하면 기록이 맞춰져요.</p>
+    <p class="st" id="cloudSt">${cloudStatus()}</p>
+    <div class="row"><button data-cloud="sync">지금 동기화</button><button data-cloud="share">보기 링크 공유</button></div>
+    <div class="row"><button data-cloud="off">연결 끊기</button></div>`;
+  else main = `<p>ID를 정해 연결하면 기록이 온라인에 저장되고, 같은 ID로 연결한 기기끼리 자동으로 맞춰져요. 비밀번호가 없어서 <b>ID를 아는 사람은 누구나 보고 고칠 수 있어요.</b> 남이 쉽게 못 맞히는 ID를 쓰세요.</p>
+    <input class="in" id="cloudIn" placeholder="영어 소문자·숫자 3~24자, 예: hyun-15577" autocapitalize="off" autocomplete="off" spellcheck="false">
+    <div class="row"><button class="go" data-cloud="connect">연결</button></div>`;
+  return `<div class="xfer glass"><b>온라인 저장</b>${main}${cloudOn() ? view : ''}</div>`;
+}
+function cloudClick(t){
+  const a = t.dataset.cloud;
+  if(a === 'connect') return cloudConnect($('#cloudIn').value);
+  if(a === 'pull') return cloudUse(cloudPending.id, true);
+  if(a === 'push'){ if(confirm(`'${cloudPending.id}'의 온라인 기록을 이 기기 기록으로 바꿀까요? 되돌릴 수 없어요.`)) cloudUse(cloudPending.id, false); return; }
+  if(a === 'cancel'){ cloudPending = null; return render(); }
+  if(a === 'sync'){ return cloudPull().then(() => toast(cloudErr ? '동기화하지 못했어요' : '동기화했어요')); }
+  if(a === 'share') return cloudShare();
+  if(a === 'off') return cloudOff();
+  if(a === 'view'){ const v = ($('#viewIn').value || '').trim().toLowerCase(); if(!ID_RE.test(v)) return toast('ID를 다시 확인해 주세요'); location.href = shareUrl(v); return; }
+  if(a === 'home') location.href = location.origin + location.pathname;
+}
+function cloudBoot(){
+  if(!cloudOn()) return;
+  if(VIEW_ID){
+    document.body.classList.add('viewing');
+    const bar = document.createElement('div'); bar.className = 'viewbar';
+    bar.innerHTML = `<span>친구 <b>${VIEW_ID}</b>의 기록 · 읽기 전용</span><button>내 기록으로</button>`;
+    bar.querySelector('button').onclick = () => { location.href = location.origin + location.pathname; };
+    document.body.appendChild(bar);
+  }
+  if(VIEW_ID || cloudId) cloudPull();
+  setInterval(() => { if(!document.hidden) cloudPull(); }, 60000);
+  document.addEventListener('visibilitychange', () => { if(document.hidden){ if(cloudDirty){ clearTimeout(cloudT); cloudPush(); } } else cloudPull(); });
+  window.addEventListener('online', () => { cloudErr = ''; cloudPull(); });
 }
 
 /* ---------- render ---------- */
@@ -2316,7 +2471,8 @@ function updateNowLine(){
 
 function renderStats(){
   const L = S.log;
-  const syncLine = `<p class="sync">${syncOn ? '기록은 계정에 저장돼 다른 기기에서도 이어져요.' : '기록은 이 브라우저에만 저장돼요.'}</p>` + xferHTML() + updHTML();
+  const syncLine = `<p class="sync">${VIEW_ID ? `친구 ${VIEW_ID}의 기록이에요.` : syncOn ? '기록은 계정에 저장돼 다른 기기에서도 이어져요.' : cloudId ? `기록은 이 브라우저와 온라인 ID ${cloudId}에 저장돼요.` : '기록은 이 브라우저에만 저장돼요.'}</p>`
+    + cloudHTML() + (VIEW_ID ? '' : xferHTML()) + updHTML();
   if(!L.length){
     statsEl.innerHTML = '<h2>기록</h2>' + `<div class="stats-empty glass">아직 기록이 없어요.<br>블록에서 ▶를 눌러 시간을 재고 ✓로 끝내면 과목별로 실제 걸린 시간이 쌓여요. 두세 번만 해도 예상 시간이 달라져요.</div>` + syncLine;
     return;
@@ -2884,6 +3040,7 @@ $('#carry').addEventListener('click', e => {
 });
 statsEl.addEventListener('click', e => {
   const u = e.target.closest('[data-upd]'); if(u) return checkUpdate(u);
+  const c = e.target.closest('[data-cloud]'); if(c) return cloudClick(c);
   const x = e.target.closest('[data-xfer]');
   if(x){ const a = x.dataset.xfer;
     if(a === 'export') exportData();
@@ -2902,8 +3059,9 @@ statsEl.addEventListener('change', e => {
 
 /* ---------- 업데이트 내역 ----------
    새 버전을 올릴 때 APP_VERSION을 올리고 CHANGELOG 맨 앞에 한 줄 추가 */
-const APP_VERSION = '1.7';
+const APP_VERSION = '1.8';
 const CHANGELOG = [
+  {v:'1.8', d:'2026-10-09', t:'온라인 저장: ID로 연결하면 기기끼리 자동 동기화, 보기 링크로 친구에게 공유'},
   {v:'1.7', d:'2026-10-08', t:'앱 이름을 15577로 변경'},
   {v:'1.6', d:'2026-10-08', t:'새 앱 아이콘: P·La·N 원소 칸으로 쓴 PLaN, 원자번호 15577'},
   {v:'1.5', d:'2026-10-08', t:'결산 맨 아래에 업데이트 내역과 최신 버전 확인 추가'},
@@ -3198,8 +3356,9 @@ setInterval(focusTick, 1000);
 render();
 initialScroll();
 initSync();
-if(S.focus) setTimeout(() => openFocus(), 300);
-if(!S.seenPinch){ S.seenPinch = 1; localSave(); setTimeout(() => toast('타임라인 확대는 두 손가락으로 벌리기'), 900); }
+cloudBoot();
+if(S.focus && !VIEW_ID) setTimeout(() => openFocus(), 300);
+if(!S.seenPinch && !VIEW_ID){ S.seenPinch = 1; localSave(); setTimeout(() => toast('타임라인 확대는 두 손가락으로 벌리기'), 900); }
 })();
 </script>
 </body>
