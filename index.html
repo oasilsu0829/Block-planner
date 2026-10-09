@@ -1194,6 +1194,9 @@ body:not(.themed) .nowbar .dot.on,body:not(.themed) .sessbar .dot{background:var
 body:not(.themed) .bar{position:relative;z-index:5;margin-top:-82px;padding:6px;gap:6px;border-radius:32px;background:var(--g-sheen),rgba(255,255,255,.3)}
 body:not(.themed) main{padding-bottom:96px;-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 14px);mask-image:linear-gradient(to bottom,transparent 0,#000 14px)}
 body:not(.themed) .key{height:50px;border-radius:26px;box-shadow:var(--g-rim),0 1px 3px rgba(0,0,0,.05)}
+/* 바 안 버튼은 얇은 유리만: 바의 굴절이 비쳐 보이게 */
+body:not(.themed) .bar .key{background:linear-gradient(180deg,rgba(255,255,255,.35),rgba(255,255,255,.05) 55%,rgba(255,255,255,.12));-webkit-backdrop-filter:none;backdrop-filter:none}
+body:not(.themed) .bar .key-red{background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,.35) 55%,rgba(255,255,255,.5));box-shadow:var(--g-rim),0 2px 8px rgba(0,0,0,.08)}
 body:not(.themed) .key b{font-weight:500}
 body:not(.themed) .key span{font-weight:600}
 body:not(.themed) .key-bk b,body:not(.themed) .key-iv b,body:not(.themed) .key.on-focus{color:var(--ink)}
@@ -1224,7 +1227,7 @@ body:not(.themed) .hour span{font-weight:500;color:var(--dim);font-size:12px}
 body:not(.themed) .now{height:2px;background:var(--now)}
 body:not(.themed) .now::before{left:-4px;top:-3.5px;width:9px;height:9px;background:var(--now);box-shadow:0 0 0 3px rgba(229,72,77,.15)}
 body:not(.themed) .blk{border-radius:18px;border:0;color:var(--ink);
-  background:var(--g-sheen),linear-gradient(100deg,color-mix(in srgb,var(--c) 12%,transparent),transparent 55%),rgba(255,255,255,.5);
+  background:var(--g-sheen),linear-gradient(100deg,color-mix(in srgb,var(--c) 12%,transparent),transparent 55%),rgba(250,251,253,.9);
   box-shadow:var(--g-rim),var(--g-drop)}
 body:not(.themed) .blk::before{box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 18%,transparent)}
 body:not(.themed) .meta .tag{color:var(--ink);background:color-mix(in srgb,var(--c) 14%,rgba(255,255,255,.6))}
@@ -1238,18 +1241,22 @@ body:not(.themed) .running::before{background:var(--c);box-shadow:0 0 0 3px colo
 body:not(.themed) .running .st::before{background:var(--c);box-shadow:none}
 body:not(.themed) .running .act{color:var(--ink)}
 body:not(.themed) .running .grip{color:var(--muted);opacity:.6}
-body:not(.themed) .blk.review{background:var(--g-sheen),color-mix(in srgb,var(--c) 6%,rgba(255,255,255,.4))}
-body:not(.themed) .blk.done{background:rgba(255,255,255,.26);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.7)}
+body:not(.themed) .blk.review{background:var(--g-sheen),color-mix(in srgb,var(--c) 6%,rgba(250,251,253,.88))}
+body:not(.themed) .blk.done{background:rgba(246,247,250,.82);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.8),0 0 0 .5px rgba(0,0,0,.03)}
 body:not(.themed) .blk.done .title{color:var(--muted)}
-body:not(.themed) .blk.school{border-radius:14px;background:var(--g-sheen),rgba(255,255,255,.34);box-shadow:var(--g-rim),0 0 0 .5px rgba(0,0,0,.04)}
+body:not(.themed) .blk.school{border-radius:14px;background:var(--g-sheen),rgba(248,249,252,.86);box-shadow:var(--g-rim),0 0 0 .5px rgba(0,0,0,.04)}
 body:not(.themed) .school .per{color:var(--ink);background:rgba(255,255,255,.8);box-shadow:0 0 0 1.5px color-mix(in srgb,var(--c) 55%,#fff)}
 body:not(.themed) .blk.school.cur{background:var(--g-sheen),var(--g-hi);box-shadow:var(--g-rim),var(--g-drop-hi)}
-body:not(.themed) .blk.school.jaseup{background:rgba(255,255,255,.18);box-shadow:inset 0 0 0 1px rgba(255,255,255,.75)}
 body:not(.themed) .school.jaseup .title,body:not(.themed) .jtag{color:var(--ink)}
-body:not(.themed) .blk.fixed{color:var(--ink);background:var(--g-sheen),rgba(120,125,140,.16);box-shadow:var(--g-rim),var(--g-drop)}
+body:not(.themed) .blk.fixed{color:var(--ink);background:var(--g-sheen),rgba(228,231,238,.92);box-shadow:var(--g-rim),var(--g-drop)}
 body:not(.themed) .fixed::before{background:var(--muted);box-shadow:none}
 body:not(.themed) .fixed .meta{color:var(--muted)}
 body:not(.themed) .blk.meal{background:var(--g-sheen),rgba(250,236,215,.45);box-shadow:var(--g-rim),0 0 0 .5px rgba(0,0,0,.03)}
+body:not(.themed) .mband{left:0;right:0;border:0;border-radius:16px;background:linear-gradient(180deg,rgba(255,236,214,.5),rgba(255,236,214,.28));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.8),inset 0 0 0 .5px rgba(255,255,255,.6)}
+body:not(.themed) .mband .mtag{border:0;color:#8A5A22;background:var(--g-sheen),var(--g);box-shadow:var(--g-rim),0 1px 3px rgba(0,0,0,.06);
+  -webkit-backdrop-filter:var(--g-blur);backdrop-filter:var(--g-blur)}
+body:not(.themed) .mband .mlb{color:#A0703A;font-weight:500}
 body:not(.themed) .meal::before{background:#D9A05B}
 body:not(.themed) .blk.meal .title,body:not(.themed) .meal .tag{color:#8A5A22}
 body:not(.themed) .act{color:var(--ink);box-shadow:var(--g-rim),0 1px 3px rgba(0,0,0,.08)}
@@ -1265,6 +1272,11 @@ body:not(.themed) .meter i b,body:not(.themed) .meter.spd i b,body:not(.themed) 
 body:not(.themed) .meter.vol i b{background:rgba(60,60,67,.3)}
 body:not(.themed) .prog button{background:transparent;box-shadow:none}
 body:not(.themed) .el .sym,body:not(.themed) .mini-els i{font-weight:600;letter-spacing:-.03em}
+body:not(.themed) .el.locked,body:not(.themed) .el.seal,body:not(.themed) .el.none{background:var(--g-sheen),rgba(255,255,255,.32);box-shadow:var(--g-rim),0 0 0 .5px rgba(0,0,0,.05)}
+body:not(.themed) .el.locked .sym{color:rgba(60,60,67,.22)}
+body:not(.themed) .el.forbt.locked-f{background:linear-gradient(180deg,rgba(255,255,255,.08),transparent 50%),#121214;box-shadow:inset 0 1px 0 rgba(255,255,255,.1),inset 0 0 0 1px #3A0A0A}
+body:not(.themed) .pc{background:rgba(255,255,255,.45)}
+body:not(.themed) .pc.want{background:transparent;box-shadow:inset 0 0 0 1px rgba(60,60,67,.35)}
 body:not(.themed) .ladder .el.on,body:not(.themed) .wk.cur .el{box-shadow:0 0 0 2px var(--ink)}
 body:not(.themed) .wk.cur small{color:var(--ink)}
 body:not(.themed) .cat-row{background:var(--g-sheen),radial-gradient(120% 120% at 0% 0%,color-mix(in srgb,var(--c) 14%,transparent),transparent 60%),var(--g)}
@@ -1276,6 +1288,12 @@ body:not(.themed) .fx-btns button,body:not(.themed) .fx-btns button.pri{color:#f
   -webkit-backdrop-filter:blur(16px) saturate(180%);backdrop-filter:blur(16px) saturate(180%);box-shadow:inset 0 1px 0 rgba(255,255,255,.22),inset 0 0 0 .5px rgba(255,255,255,.18)}
 body:not(.themed) .fx-btns button.pri{background:linear-gradient(180deg,rgba(255,255,255,.3),rgba(255,255,255,.1)),rgba(255,255,255,.14);font-weight:600}
 
+/* 굴절 (크롬 계열): 가장자리는 렌즈처럼 휘고, 블러는 얇게 해서 맑은 유리로 */
+html.lg-refract body:not(.themed) [data-lgr]{
+  -webkit-backdrop-filter:var(--lg-refract) blur(5px) saturate(190%) brightness(1.04);backdrop-filter:var(--lg-refract) blur(5px) saturate(190%) brightness(1.04)}
+html.lg-refract body:not(.themed) .sheet[data-lgr]{
+  -webkit-backdrop-filter:var(--lg-refract) blur(18px) saturate(190%);backdrop-filter:var(--lg-refract) blur(18px) saturate(190%)}
+
 /* 접근성: 투명도 줄이기·대비 높이기 */
 @media (prefers-reduced-transparency: reduce){
   body:not(.themed){--g:rgba(255,255,255,.92);--g-hi:#fff}
@@ -1284,6 +1302,9 @@ body:not(.themed) .fx-btns button.pri{background:linear-gradient(180deg,rgba(255
 @media (prefers-contrast: more){
   body:not(.themed){--muted:rgba(60,60,67,.85);--g-drop:0 0 0 1px rgba(0,0,0,.3)}
 }
+/* 자습 칸: 어떤 테마에서도 보이지 않는 빈 칸 (누르기만 됨) */
+.jband,body.themed .jband{background:none!important;border:0!important;pointer-events:auto;cursor:pointer}
+
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -2591,9 +2612,9 @@ function subjectColor(t){
 function fixedHTML(x){
   const h = x.d*PX - 2, top = (x.s - DAY_START)*PX + 1;
   if(x.self){
-    /* 자습: 블록이 아니라 빈 칸. 왼쪽 여백의 작은 표만 누를 수 있음 */
-    const lb = x.f.school ? `${x.f.period}교시` : '고정';
-    return `<div class="jband" style="top:${top}px;height:${h}px"><button class="jtag" data-fid="${x.f.id}" aria-label="${x.f.school ? lb : esc(x.f.title)} 자습, 누르면 되돌리기">${lb}<br>자습</button></div>`;
+    /* 자습: 아무것도 그리지 않는 빈 칸. 그 자리를 누르면 되돌리기 시트가 열림 */
+    const lb = x.f.school ? `${x.f.period}교시` : esc(x.f.title);
+    return `<div class="jband" role="button" tabindex="-1" data-fid="${x.f.id}" style="top:${top}px;height:${h}px" aria-label="${lb} 자습, 누르면 되돌리기"></div>`;
   }
   if(x.f.school){
     const m = nowMin(), cur_ = cur === todayKey() && m >= x.s && m < x.s + x.d;
@@ -3231,8 +3252,9 @@ statsEl.addEventListener('change', e => {
 
 /* ---------- 업데이트 내역 ----------
    새 버전을 올릴 때 APP_VERSION을 올리고 CHANGELOG 맨 앞에 한 줄 추가 */
-const APP_VERSION = '2.0';
+const APP_VERSION = '2.1';
 const CHANGELOG = [
+  {v:'2.1', d:'2026-10-09', t:'자습으로 바꾼 교시는 완전히 빈 칸으로(그 자리를 누르면 되돌리기), 블록 뒤로 시간선이 비쳐 겹쳐 보이던 문제 수정, 빗금 대신 유리, 크롬 계열에서 하단 바·버튼·시트 가장자리 빛 굴절'},
   {v:'2.0', d:'2026-10-09', t:'리퀴드 글라스 통일: 바탕을 뺀 버튼·바·시트·카드·블록을 모두 같은 유리로, 쨍한 파란 채움을 없애고 고른 상태는 더 밝은 유리로. 하단 바 아래로 내용이 흘러감'},
   {v:'1.9', d:'2026-10-09', t:'기본 테마를 애플 리퀴드 글라스 스타일로 새로 디자인 (투명한 유리 패널, 파란 강조색, Pretendard 글꼴)'},
   {v:'1.8', d:'2026-10-09', t:'온라인 저장: ID로 연결하면 기기끼리 자동 동기화, 보기 링크로 친구에게 공유'},
@@ -3533,6 +3555,54 @@ initSync();
 cloudBoot();
 if(S.focus && !VIEW_ID) setTimeout(() => openFocus(), 300);
 if(!S.seenPinch && !VIEW_ID){ S.seenPinch = 1; localSave(); setTimeout(() => toast('타임라인 확대는 두 손가락으로 벌리기'), 900); }
+})();
+
+/* ---------- 리퀴드 글라스 굴절 (기본 테마, 크롬 계열만) ----------
+   유리 가장자리에서 뒤 화면이 렌즈처럼 휘어 보이게. 요소 크기마다 변위 지도(SVG)를 만들어 backdrop-filter로 씀.
+   사파리·파이어폭스는 backdrop-filter에 SVG 필터를 못 써서 기존 유리(블러+빛 테두리)로 남음 */
+(() => {
+  const ua = navigator.userAgent;
+  if(!/Chrome\/\d/.test(ua) || /CriOS|EdgiOS|FxiOS/.test(ua)) return;
+  if(matchMedia('(prefers-reduced-transparency: reduce)').matches) return;
+  document.documentElement.classList.add('lg-refract');
+  const NS = 'http://www.w3.org/2000/svg';
+  const host = document.createElementNS(NS, 'svg');
+  host.setAttribute('width', '0'); host.setAttribute('height', '0'); host.setAttribute('aria-hidden', 'true');
+  host.style.cssText = 'position:absolute;width:0;height:0;overflow:hidden';
+  const defs = document.createElementNS(NS, 'defs'); host.appendChild(defs); document.body.appendChild(host);
+  /* 빨강 = 가로, 초록 = 세로 변위. 가운데는 중립(128)이라 그대로, 가장자리 띠에서만 휨 */
+  const mapURI = (w, h, r, e) => 'data:image/svg+xml,' + encodeURIComponent(
+    `<svg xmlns="${NS}" width="${w}" height="${h}"><defs>` +
+    `<linearGradient id="x"><stop offset="0" stop-color="#000"/><stop offset="1" stop-color="#f00"/></linearGradient>` +
+    `<linearGradient id="y" x2="0" y2="1"><stop offset="0" stop-color="#000"/><stop offset="1" stop-color="#0f0"/></linearGradient>` +
+    `<filter id="b"><feGaussianBlur stdDeviation="${e/2.2}"/></filter></defs>` +
+    `<rect width="${w}" height="${h}" fill="url(#x)"/><rect width="${w}" height="${h}" fill="url(#y)" style="mix-blend-mode:screen"/>` +
+    `<rect x="${e}" y="${e}" width="${Math.max(0, w - 2*e)}" height="${Math.max(0, h - 2*e)}" rx="${Math.max(0, r - e)}" fill="#808000" filter="url(#b)"/></svg>`);
+  let n = 0;
+  const seen = new WeakMap();
+  const build = el => {
+    const w = Math.round(el.offsetWidth), h = Math.round(el.offsetHeight);
+    if(w < 8 || h < 8) return;
+    const key = w + 'x' + h; let rec = seen.get(el);
+    if(rec && rec.key === key) return;
+    if(!rec){ rec = {id:'lgf' + (n++)}; seen.set(el, rec); }
+    rec.key = key;
+    const r = Math.min(parseFloat(getComputedStyle(el).borderTopLeftRadius) || 0, w/2, h/2);
+    const e = Math.max(6, Math.min(16, Math.min(w, h) * .28));     /* 휘는 가장자리 띠 두께 */
+    const sc = Math.round(Math.min(48, Math.min(w, h) * .55));     /* 휘는 세기 */
+    let f = defs.querySelector('#' + rec.id);
+    if(!f){ f = document.createElementNS(NS, 'filter'); f.id = rec.id; defs.appendChild(f); }
+    for(const [k, v] of Object.entries({x:0, y:0, width:w, height:h, filterUnits:'userSpaceOnUse', primitiveUnits:'userSpaceOnUse', 'color-interpolation-filters':'sRGB'})) f.setAttribute(k, v);
+    f.innerHTML = `<feImage href="${mapURI(w, h, r, e)}" x="0" y="0" width="${w}" height="${h}" preserveAspectRatio="none" result="m"/>` +
+      `<feDisplacementMap in="SourceGraphic" in2="m" scale="${-sc}" xChannelSelector="R" yChannelSelector="G"/>`;
+    el.style.setProperty('--lg-refract', `url(#${rec.id})`);
+  };
+  const ro = new ResizeObserver(es => es.forEach(x => build(x.target)));
+  const watch = () => document.querySelectorAll('.bar, .seg, .top .icon, .dday, .toast, .sheet').forEach(el => {
+    if(!el.dataset.lgr){ el.dataset.lgr = 1; ro.observe(el); } build(el);
+  });
+  watch();
+  new MutationObserver(watch).observe(document.getElementById('sheetWrap'), {attributes:true, attributeFilter:['hidden']});
 })();
 </script>
 </body>
