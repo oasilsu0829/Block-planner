@@ -1,0 +1,18 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 15577 온라인 저장: planners/{ID} 문서 하나에 기록 전체(JSON 문자열)
+    // 비밀번호 없이 ID만 알면 읽고 쓸 수 있음. 삭제와 다른 컬렉션은 막음
+    match /planners/{id} {
+      allow read: if id.matches('^[a-z0-9_-]{3,24}$');
+      allow create, update: if id.matches('^[a-z0-9_-]{3,24}$')
+        && request.resource.data.keys().hasOnly(['data', 'updatedAt'])
+        && request.resource.data.data is string
+        && request.resource.data.data.size() < 900000
+        && request.resource.data.updatedAt is int;
+    }
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
