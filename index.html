@@ -334,6 +334,7 @@ body.themed .brk span{background:var(--T-panel);color:var(--muted)}
 .in:focus{outline:none;border-color:var(--pb);box-shadow:0 0 0 3px rgba(169,193,255,.35)}
 .row{display:flex;gap:8px}
 .row .in.unit{width:96px;flex:none}
+#fRange .in{flex:1;min-width:0;padding:0 12px}
 .chips{display:flex;flex-wrap:wrap;gap:7px}
 .chip{display:inline-flex;align-items:center;gap:7px;border-radius:999px;padding:7px 14px;font-size:14px;
   border:1px solid var(--edge);background:rgba(255,255,255,.7);box-shadow:var(--hl),0 2px 6px rgba(80,100,160,.08);color:var(--ink)}
@@ -1470,7 +1471,7 @@ function isSelf(f, k){
 function fixedFor(k){
   const wd = dateOf(k).getDay();
   const off = (S.schoolOff || []).includes(k);
-  return S.fixed.filter(f => f.days.includes(wd) && (!f.only || f.only === k) && !(f.skip || []).includes(k) && !(off && f.school))
+  return S.fixed.filter(f => f.days.includes(wd) && (!f.only || f.only === k) && (!f.from || k >= f.from) && (!f.until || k <= f.until) && !(f.skip || []).includes(k) && !(off && f.school))
     .map(f => ({f, s:f.start, d:f.dur, self:isSelf(f, k)})).sort((a,b) => a.s - b.s);
 }
 function layout(list, pin, k = cur){
@@ -1584,7 +1585,7 @@ function prune(){
   S.schoolOff = (S.schoolOff || []).filter(k => k >= cut);
   if(S.memos) S.memos = S.memos.filter(m => !(m.date && m.date < cut && m.done));
   if(S.session) for(const k in S.session) if(k < cut) delete S.session[k];
-  S.fixed = S.fixed.filter(f => !f.only || f.only >= cut);
+  S.fixed = S.fixed.filter(f => (!f.only || f.only >= cut) && (!f.until || f.until >= cut));
   if(S.selfDay) S.selfDay = S.selfDay.filter(k => k >= cut);
   if(S.selfFlip) for(const k in S.selfFlip) if(k < cut) delete S.selfFlip[k];
   if(S.pomoLog) for(const k in S.pomoLog) if(k < cut) delete S.pomoLog[k];
@@ -2706,7 +2707,7 @@ function fixedHTML(x){
   }
   return `<div class="blk fixed${h < 58 ? ' compact' : ''}${h < 26 ? ' tiny' : ''}" data-fid="${x.f.id}" style="top:${top}px;height:${h}px;--c:var(--ink)">
     <div class="blk-body"><span class="title"><span>${esc(x.f.title)}</span></span>
-      <div class="meta"><span class="tm">${fmt(x.s)}–${fmt(x.s + x.d)}</span><span>고정</span></div></div></div>`;
+      <div class="meta"><span class="tm">${fmt(x.s)}–${fmt(x.s + x.d)}</span><span>${x.f.until ? `~${+x.f.until.slice(5,7)}/${+x.f.until.slice(8)}` : '고정'}</span></div></div></div>`;
 }
 let dayEnd = 24*60;
 function renderTimeline(){
@@ -3031,7 +3032,7 @@ function openFixedSheet(fid){
   const f = fid ? S.fixed.find(x => x.id === fid) : null;
   if(fid && !f) return;
   SH = {kind:'fixed', id:fid || null, arm:false,
-        d: f ? {days:[...f.days]} : {days:[dateOf(cur).getDay()]}};
+        d: f ? {days:[...f.days], range:!!(f.from || f.until)} : {days:[dateOf(cur).getDay()], range:false}};
   const d = f ? {title:f.title, start:fmt(f.start), end:fmt(Math.min(f.start + f.dur, 24*60-5))} : {title:'', start:'18:00', end:'21:00'};
   const dt = dateOf(cur);
   sheet.innerHTML = `
@@ -3048,6 +3049,13 @@ function openFixedSheet(fid){
     <div class="f"><span>반복 요일</span><div class="chips">${[1,2,3,4,5,6,0].map(w =>
       `<button class="chip" style="--c:var(--ink)" data-wd="${w}" aria-pressed="${SH.d.days.includes(w)}">${WEEK[w]}</button>`).join('')}</div>
       <small>문풀은 이 시간을 피해서 배치돼요.</small></div>
+    ${f && f.school ? '' : `<div class="f"><span>기간</span><div class="chips">
+      <button class="chip" style="--c:var(--ink)" data-act="frange" data-v="0" aria-pressed="${!SH.d.range}">계속 반복</button>
+      <button class="chip" style="--c:var(--ink)" data-act="frange" data-v="1" aria-pressed="${SH.d.range}">기간 정하기</button></div>
+      <div class="row" id="fRange" style="margin-top:8px"${SH.d.range ? '' : ' hidden'}>
+        <input class="in" id="fFrom" type="date" value="${(f && f.from) || cur}" aria-label="시작 날짜">
+        <input class="in" id="fUntil" type="date" value="${(f && f.until) || addDays(cur, 13)}" aria-label="끝 날짜"></div>
+      <small>${SH.d.range ? '이 기간에만 나타나고, 끝나면 저절로 사라져요.' : '방학 특강처럼 잠깐만 하는 일정은 기간을 정하세요.'}</small></div>`}
     ${f && f.school ? '' : `<label class="mealtog"><input type="checkbox" id="fMeal"${f && f.meal ? ' checked' : ''}> 식사 시간 <small>쉬는시간으로 치지 않고, 공부 분량에도 안 들어가요</small></label>`}
     ${f ? `<button class="textbtn" data-act="fskip">${dt.getMonth()+1}/${dt.getDate()}만 빠지기</button>` : ''}
     ${f && f.school ? `<br><button class="textbtn" data-act="fdayoff">${dt.getMonth()+1}/${dt.getDate()} 수업 전부 빼기 (시험·휴일)</button>` : ''}
@@ -3064,6 +3072,14 @@ function saveFixed(){
   const st = Math.max(DAY_START, s);
   const obj = {title, start:st, dur:Math.max(10, e - st), days:[...SH.d.days]};
   const mt = $('#fMeal'); if(mt) obj.meal = mt.checked;
+  if($('#fRange')){
+    if(SH.d.range){
+      const fr = $('#fFrom').value, un = $('#fUntil').value;
+      if(!fr || !un){ toast('시작·끝 날짜를 골라주세요'); return; }
+      if(un < fr){ toast('끝 날짜가 시작보다 늦어야 해요'); return; }
+      obj.from = fr; obj.until = un;
+    } else { obj.from = null; obj.until = null; }
+  }
   if(SH.id) Object.assign(S.fixed.find(x => x.id === SH.id), obj);
   else S.fixed.push(Object.assign({id:'f' + Date.now().toString(36), skip:[]}, obj));
   commit(cur); save(); closeSheet(); render();
@@ -3189,6 +3205,13 @@ sheetWrap.addEventListener('click', e => {
     const w = +t.dataset.wd, ds = SH.d.days, i = ds.indexOf(w);
     if(i >= 0) ds.splice(i, 1); else ds.push(w);
     t.setAttribute('aria-pressed', i < 0); return;
+  }
+  if(t.dataset.act === 'frange'){
+    SH.d.range = t.dataset.v === '1';
+    sheet.querySelectorAll('[data-act="frange"]').forEach(x => x.setAttribute('aria-pressed', x === t));
+    const r = $('#fRange'); r.hidden = !SH.d.range;
+    r.parentElement.querySelector('small').textContent = SH.d.range ? '이 기간에만 나타나고, 끝나면 저절로 사라져요.' : '방학 특강처럼 잠깐만 하는 일정은 기간을 정하세요.';
+    return;
   }
   if(t.dataset.act === 'fsave') return saveFixed();
   if(t.dataset.act === 'dsave'){
@@ -3349,8 +3372,9 @@ statsEl.addEventListener('change', e => {
 
 /* ---------- 업데이트 내역 ----------
    새 버전을 올릴 때 APP_VERSION을 올리고 CHANGELOG 맨 앞에 한 줄 추가 */
-const APP_VERSION = '2.2';
+const APP_VERSION = '2.3';
 const CHANGELOG = [
+  {v:'2.3', d:'2026-10-09', t:'고정 일정에 기간 정하기: 특강처럼 정한 날짜 사이에만 반복되고 끝나면 저절로 사라짐'},
   {v:'2.2', d:'2026-10-09', t:'리퀴드 글라스 배경: 기본 배경 7가지 또는 내 사진을 흐리고 어둡게 깔기 (결산 → 테마). 온라인 저장으로 다른 기기와도 맞춰짐'},
   {v:'2.1', d:'2026-10-09', t:'자습으로 바꾼 교시는 완전히 빈 칸으로(그 자리를 누르면 되돌리기), 블록 뒤로 시간선이 비쳐 겹쳐 보이던 문제 수정, 빗금 대신 유리, 크롬 계열에서 하단 바·버튼·시트 가장자리 빛 굴절'},
   {v:'2.0', d:'2026-10-09', t:'리퀴드 글라스 통일: 바탕을 뺀 버튼·바·시트·카드·블록을 모두 같은 유리로, 쨍한 파란 채움을 없애고 고른 상태는 더 밝은 유리로. 하단 바 아래로 내용이 흘러감'},
@@ -3478,7 +3502,7 @@ function openAddPicker(){
       <button data-act="pk" data-v="prob"><i>＋</i><b>문풀</b><small>풀 문제. ▶로 시간을 재고 예상 시간을 배워요</small></button>
       <button data-act="pk" data-v="lec"><i>▶︎</i><b>인강</b><small>강의, 성취도는 직접</small></button>
       <button data-act="pk" data-v="rev"><i>✎</i><b>정리</b><small>복습·정리, 체크만</small></button>
-      <button data-act="pk" data-v="fix"><i>⌂</i><b>고정 일정</b><small>학원·식사, 매주 반복</small></button>
+      <button data-act="pk" data-v="fix"><i>⌂</i><b>고정 일정</b><small>학원·식사·특강, 반복 또는 기간</small></button>
       <button data-act="pk" data-v="memo"><i>◆</i><b>메모</b><small>까먹을 것 같은 것</small></button>
       <button data-act="pk" data-v="pomo"><i>◎</i><b>뽀모도로</b><small>블록 없이 타이머만</small></button>
     </div>`;
