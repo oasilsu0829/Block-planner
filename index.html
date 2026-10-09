@@ -1294,6 +1294,29 @@ html.lg-refract body:not(.themed) [data-lgr]{
 html.lg-refract body:not(.themed) .sheet[data-lgr]{
   -webkit-backdrop-filter:var(--lg-refract) blur(18px) saturate(190%);backdrop-filter:var(--lg-refract) blur(18px) saturate(190%)}
 
+/* ── 배경 사진 (기본 테마): 흐리게 + 어둡게 깔고, 유리가 그 위에 뜸 ── */
+body:not(.themed).hasbg .blobs::before{content:"";position:absolute;inset:-80px;background:var(--bgimg) center/cover no-repeat;
+  filter:blur(var(--bgblur,28px)) saturate(1.15);transform:translateZ(0)}
+body:not(.themed).hasbg .blobs::after{content:"";position:absolute;inset:0;background:rgba(0,0,0,var(--bgdim,.25))}
+/* 어두운 배경: 바탕 위에 바로 놓인 글씨만 흰색, 유리는 조금 더 두껍게 */
+body:not(.themed).bgdark{--g:rgba(255,255,255,.6);--g-hi:rgba(255,255,255,.9);--grid:rgba(255,255,255,.2);--grid2:rgba(255,255,255,.06)}
+body:not(.themed).bgdark :is(.nixie,.date small,.date small em,.hour span,.settle>h2,.stats>h2,.dex-head h2,.dex-head .cnt,.dex-head .cnt b,.dex h3,.dex .sub,
+  .rule,.legend,.sync,.ladder small,.wk small,.dcard b,.dcard small,.dcard small em,.hint2,.mband .mlb){color:#fff;text-shadow:0 1px 8px rgba(0,0,0,.25)}
+body:not(.themed).bgdark .date small{opacity:.85}
+/* 테마 시트의 배경 고르기 */
+.bgsec{margin-top:20px}
+.bgsec h3{font-size:15px;font-weight:700;margin:0 0 4px}
+.bggrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:10px 0 4px}
+.bgcard{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;border:0;padding:0;background:none;color:inherit;font:inherit;font-size:12px;cursor:pointer}
+.bgcard i{display:block;width:100%;aspect-ratio:.72;border-radius:14px;background:var(--pv,#ECEFF4) center/cover;box-shadow:inset 0 0 0 .5px rgba(0,0,0,.08),0 2px 6px rgba(0,0,0,.08);
+  display:grid;place-items:center;font-style:normal;font-size:20px;color:rgba(60,60,67,.6)}
+.bgcard.on i{box-shadow:0 0 0 2.5px var(--ink),0 2px 6px rgba(0,0,0,.08)}
+.bgcard input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.bgsl{display:flex;align-items:center;gap:12px;margin-top:12px;font-size:13px;color:var(--muted)}
+.bgsl span{width:44px;flex:none}
+.bgsl input{flex:1;accent-color:var(--ink)}
+.bgsl output{width:36px;text-align:right;font-variant-numeric:tabular-nums;color:var(--ink)}
+
 /* 접근성: 투명도 줄이기·대비 높이기 */
 @media (prefers-reduced-transparency: reduce){
   body:not(.themed){--g:rgba(255,255,255,.92);--g-hi:#fff}
@@ -2116,12 +2139,66 @@ const THEMES = [
   {id:'catalog',   name:'캐주얼 오디오',   need:'네오디뮴 Nd 획득',  ok:c => c.has('Nd'),           pv:['#2E9CD0','#FFFFFF','#24346E','#1E2A5A']}
 ];
 const themesFor = c => new Set(THEMES.filter(t => t.ok(c)).map(t => t.id));
+/* 배경 사진 (기본 테마 전용). 기본 배경은 그라데이션이라 흐리게 하면 아이폰 배경화면처럼 보임. lum = 대략의 밝기 */
+const BGS = [
+  {id:'dawn',   name:'새벽', lum:.72, css:'radial-gradient(60% 50% at 20% 20%,#FFC7D9,transparent 70%),radial-gradient(60% 50% at 80% 30%,#B9C8FF,transparent 70%),radial-gradient(70% 60% at 50% 100%,#8FA6E8,transparent 70%),#DCE2F5'},
+  {id:'sunset', name:'노을', lum:.55, css:'radial-gradient(60% 45% at 25% 25%,#FFB36B,transparent 70%),radial-gradient(60% 50% at 80% 40%,#FF6F91,transparent 70%),radial-gradient(80% 60% at 50% 100%,#6A4C9C,transparent 70%),#E58A7A'},
+  {id:'forest', name:'숲',   lum:.42, css:'radial-gradient(60% 50% at 20% 25%,#9BD8A4,transparent 70%),radial-gradient(60% 50% at 85% 45%,#3E9C8A,transparent 70%),radial-gradient(80% 60% at 40% 100%,#1F4D45,transparent 70%),#4F8C74'},
+  {id:'ocean',  name:'바다', lum:.5,  css:'radial-gradient(60% 50% at 25% 20%,#8FE3F0,transparent 70%),radial-gradient(60% 50% at 80% 45%,#3D7FE0,transparent 70%),radial-gradient(80% 60% at 50% 100%,#14366E,transparent 70%),#3B87C4'},
+  {id:'night',  name:'밤',   lum:.2,  css:'radial-gradient(45% 35% at 75% 25%,#7B6CF0,transparent 70%),radial-gradient(50% 40% at 20% 60%,#3B4DB8,transparent 70%),radial-gradient(60% 40% at 70% 95%,#C15FB0,transparent 70%),#151A3A'},
+  {id:'mono',   name:'안개', lum:.8,  css:'radial-gradient(60% 50% at 30% 25%,#FFFFFF,transparent 70%),radial-gradient(60% 50% at 80% 70%,#C9CED8,transparent 70%),#E3E6EC'},
+  {id:'peach',  name:'복숭아', lum:.75, css:'radial-gradient(60% 50% at 25% 25%,#FFE0C2,transparent 70%),radial-gradient(60% 50% at 80% 40%,#FFC2D1,transparent 70%),radial-gradient(70% 60% at 50% 100%,#F5A88E,transparent 70%),#FBD3C4'}
+];
+const BG_DEF = {blur:28, dim:20};
+let bgLast = '';
+function applyBg(){
+  const b = S.bg, pre = b && BGS.find(x => x.id === b.id);
+  const src = b ? (b.id === 'photo' ? (b.img ? `url("${b.img}")` : '') : pre ? pre.css : '') : '';
+  document.body.classList.toggle('hasbg', !!src);
+  if(!src){ document.body.classList.remove('bgdark'); bgLast = ''; return; }
+  const st = document.body.style, blur = b.blur ?? BG_DEF.blur, dim = (b.dim ?? BG_DEF.dim)/100;
+  if(src !== bgLast){ st.setProperty('--bgimg', src); bgLast = src; }
+  st.setProperty('--bgblur', blur + 'px'); st.setProperty('--bgdim', dim);
+  const lum = (b.id === 'photo' ? (b.lum ?? .5) : pre.lum) * (1 - dim);
+  document.body.classList.toggle('bgdark', lum < .5);
+}
+/* 사진을 작게 줄여 저장(온라인 저장 용량도 아낌). 어차피 흐리게 쓰니 640px이면 충분 */
+function loadBgPhoto(file){
+  return new Promise((ok, no) => {
+    const url = URL.createObjectURL(file), img = new Image();
+    img.onload = () => {
+      const k = Math.min(1, 640 / Math.max(img.naturalWidth, img.naturalHeight));
+      const w = Math.max(1, Math.round(img.naturalWidth*k)), h = Math.max(1, Math.round(img.naturalHeight*k));
+      const c = document.createElement('canvas'); c.width = w; c.height = h;
+      const g = c.getContext('2d'); g.drawImage(img, 0, 0, w, h);
+      const t = document.createElement('canvas'); t.width = t.height = 16;
+      const tg = t.getContext('2d'); tg.drawImage(c, 0, 0, 16, 16);
+      const px = tg.getImageData(0, 0, 16, 16).data; let L = 0;
+      for(let i = 0; i < px.length; i += 4) L += (.2126*px[i] + .7152*px[i+1] + .0722*px[i+2]) / 255;
+      URL.revokeObjectURL(url);
+      ok({img:c.toDataURL('image/jpeg', .72), lum:+(L / 256).toFixed(2)});
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); no(new Error('img')); };
+    img.src = url;
+  });
+}
+function bgSectionHTML(){
+  const b = S.bg, cur = b ? b.id : '';
+  const card = (id, name, pv, extra = '') => `<button class="bgcard${cur === id ? ' on' : ''}" data-act="setbg" data-bg="${id}" aria-pressed="${cur === id}"><i style="--pv:${pv}">${extra}</i>${name}</button>`;
+  const photo = b && b.id === 'photo' && b.img;
+  return `<div class="bgsec"><h3>배경</h3><p class="note" style="margin-top:0">리퀴드 글라스에서만 보여요. 사진은 흐리고 어둡게 깔려서 글씨가 잘 읽혀요.</p>
+    <div class="bggrid">${card('', '기본', 'linear-gradient(180deg,#F1F3F7,#E8EBF1)')}${BGS.map(x => card(x.id, x.name, x.css)).join('')}
+      <label class="bgcard${photo ? ' on' : ''}"><input type="file" accept="image/*" data-bgfile><i style="--pv:${photo ? `url('${b.img}')` : 'rgba(118,118,128,.12)'}">${photo ? '' : '+'}</i>내 사진</label></div>
+    ${b ? `<label class="bgsl"><span>흐림</span><input type="range" min="0" max="60" step="1" value="${b.blur ?? BG_DEF.blur}" data-bgset="blur"><output>${b.blur ?? BG_DEF.blur}</output></label>
+    <label class="bgsl"><span>어둡게</span><input type="range" min="0" max="70" step="1" value="${b.dim ?? BG_DEF.dim}" data-bgset="dim"><output>${b.dim ?? BG_DEF.dim}%</output></label>` : ''}</div>`;
+}
 function applyTheme(){
   const u = themesFor(collectedSet());
   const id = u.has(S.theme) ? S.theme : 'default';
   [...document.body.classList].forEach(cl => { if(cl.startsWith('th-')) document.body.classList.remove(cl); });
   document.body.classList.toggle('themed', id !== 'default');
   if(id !== 'default') document.body.classList.add('th-' + id);
+  applyBg();
 }
 function openThemeSheet(){
   const u = themesFor(collectedSet()), curT = u.has(S.theme) ? S.theme : 'default';
@@ -2133,7 +2210,7 @@ function openThemeSheet(){
       return `<button class="thcard${on ? ' on' : ''}${lock ? ' lock' : ''}" data-act="settheme" data-tid="${t.id}" aria-label="${t.name}${lock ? ', 잠김' : ''}">
         <span class="pv" style="background:${bg}"><b style="color:${ink}">09.29</b><i style="background:${card};border-color:${acc}"></i><u style="background:${acc}"></u></span>
         <span class="nm">${t.name}${S.themeNew && S.themeNew[t.id] ? ' <span class="new">NEW</span>' : ''}</span><small>${lock ? t.need : on ? '사용 중' : '누르면 적용'}</small></button>`;
-    }).join('')}</div>`;
+    }).join('')}</div>${curT === 'default' ? bgSectionHTML() : ''}`;
   sheetWrap.hidden = false;
   if(S.themeNew && Object.keys(S.themeNew).length){ S.themeNew = {}; localSave(); }
 }
@@ -3055,6 +3132,15 @@ tl.addEventListener('click', e => {
   }
   openSheet('edit', id);
 });
+sheetWrap.addEventListener('change', async e => {
+  if(!SH || SH.kind !== 'theme' || !e.target.matches('[data-bgfile]')) return;
+  const f = e.target.files && e.target.files[0]; if(!f) return;
+  try{
+    const r = await loadBgPhoto(f), o = S.bg || {};
+    S.bg = {id:'photo', img:r.img, lum:r.lum, blur:o.blur ?? BG_DEF.blur, dim:o.dim ?? (r.lum > .6 ? 30 : BG_DEF.dim)};
+    save(); applyBg(); const y = sheet.scrollTop; openThemeSheet(); sheet.scrollTop = y;
+  }catch(err){ toast('사진을 불러오지 못했어요'); }
+});
 sheetWrap.addEventListener('click', e => {
   const t = e.target.closest('[data-act], [data-cat], [data-wd]'); if(!t || !SH) return;
   if(SH.kind === 'pick') return pickAction(t);
@@ -3090,6 +3176,11 @@ sheetWrap.addEventListener('click', e => {
     if(t.dataset.act === 'settheme'){
       if(!themesFor(collectedSet()).has(t.dataset.tid)){ toast('아직 잠겨 있어요'); return; }
       S.theme = t.dataset.tid; save(); applyTheme(); openThemeSheet(); render();
+    }
+    if(t.dataset.act === 'setbg'){
+      const id = t.dataset.bg, o = S.bg || {};
+      S.bg = id ? {id, blur:o.blur ?? BG_DEF.blur, dim:o.dim ?? BG_DEF.dim, ...(id === 'photo' ? {img:o.img, lum:o.lum} : {})} : null;
+      save(); applyBg(); const y = sheet.scrollTop; openThemeSheet(); sheet.scrollTop = y;
     }
     return;
   }
@@ -3170,8 +3261,14 @@ sheetWrap.addEventListener('click', e => {
   }
   if(a === 'undone'){ const id = SH.id; closeSheet(); undone(id); return; }
 });
+let bgSaveT = null;
 sheetWrap.addEventListener('input', e => {
   if(!SH) return;
+  if(SH.kind === 'theme' && e.target.dataset.bgset && S.bg){
+    const k = e.target.dataset.bgset, v = +e.target.value;
+    S.bg[k] = v; e.target.nextElementSibling.textContent = k === 'dim' ? v + '%' : v;
+    applyBg(); clearTimeout(bgSaveT); bgSaveT = setTimeout(save, 500); return;
+  }
   if(SH.kind === 'cats'){
     const t = e.target;
     if(t.dataset.cname){ const c = S.cats.find(x => x.id === t.dataset.cname); if(c){ c.name = t.value.trim() || c.name; catSaveSoon(); } }
@@ -3252,8 +3349,9 @@ statsEl.addEventListener('change', e => {
 
 /* ---------- 업데이트 내역 ----------
    새 버전을 올릴 때 APP_VERSION을 올리고 CHANGELOG 맨 앞에 한 줄 추가 */
-const APP_VERSION = '2.1';
+const APP_VERSION = '2.2';
 const CHANGELOG = [
+  {v:'2.2', d:'2026-10-09', t:'리퀴드 글라스 배경: 기본 배경 7가지 또는 내 사진을 흐리고 어둡게 깔기 (결산 → 테마). 온라인 저장으로 다른 기기와도 맞춰짐'},
   {v:'2.1', d:'2026-10-09', t:'자습으로 바꾼 교시는 완전히 빈 칸으로(그 자리를 누르면 되돌리기), 블록 뒤로 시간선이 비쳐 겹쳐 보이던 문제 수정, 빗금 대신 유리, 크롬 계열에서 하단 바·버튼·시트 가장자리 빛 굴절'},
   {v:'2.0', d:'2026-10-09', t:'리퀴드 글라스 통일: 바탕을 뺀 버튼·바·시트·카드·블록을 모두 같은 유리로, 쨍한 파란 채움을 없애고 고른 상태는 더 밝은 유리로. 하단 바 아래로 내용이 흘러감'},
   {v:'1.9', d:'2026-10-09', t:'기본 테마를 애플 리퀴드 글라스 스타일로 새로 디자인 (투명한 유리 패널, 파란 강조색, Pretendard 글꼴)'},
