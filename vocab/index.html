@@ -310,6 +310,9 @@ select.in{appearance:none;-webkit-appearance:none;padding-right:36px;
 .xrow{margin-top:8px}
 .xrow .ghost,.xrow .primary{height:48px;font-size:15px}
 .xfile{display:flex;align-items:center;justify-content:center;cursor:pointer}
+.cid{font-weight:600;color:var(--acc)}
+.cst{font-size:12.5px;color:var(--muted);margin:8px 0 0}
+.ctext{font-size:13.5px;line-height:1.6;margin:0 0 10px;color:var(--ink)}
 </style>
 </head>
 <body>
@@ -1932,7 +1935,103 @@ function normalize(s){
 function localLoad(){ try{ const r = localStorage.getItem(LS); return r ? JSON.parse(r) : null; }catch(e){ return null; } }
 function localSave(){ try{ localStorage.setItem(LS, JSON.stringify(S)); }catch(e){} }
 let S = normalize(localLoad());
-function save(){ S.updatedAt = Date.now(); localSave(); }
+function save(){ S.updatedAt = Date.now(); localSave(); cloudQueue(); }
+
+/* ---------- 온라인 저장 (ID) ----------
+   15577과 같은 Firestore 프로젝트의 planners/v-{ID} 문서 하나에 S 전체를 JSON 문자열로 저장.
+   같은 ID로 연결한 기기끼리 updatedAt이 최신인 쪽으로 맞춤 */
+const CLOUD = {projectId:'p15577', apiKey:'AIzaSyCMxJrxsFFEh9A9gDmbT4_rda9XLo8JgPE'};
+const CLOUD_KEY = 'eowon.vocab.cloudId', ID_RE = /^[a-z0-9_-]{3,22}$/;
+let cloudId = null, cloudAt = 0, cloudDirty = false, cloudBusy = false, cloudErr = '', cloudPending = null, cloudT = null;
+try{ cloudId = localStorage.getItem(CLOUD_KEY); }catch(e){}
+const cloudUrl = id => `https://firestore.googleapis.com/v1/projects/${CLOUD.projectId}/databases/(default)/documents/planners/v-${id}?key=${CLOUD.apiKey}`;
+async function cloudGet(id){
+  const r = await fetch(cloudUrl(id), {cache:'no-store'});
+  if(r.status === 404) return null;
+  if(!r.ok) throw new Error('get ' + r.status);
+  const f = (await r.json()).fields || {};
+  return f.data ? JSON.parse(f.data.stringValue) : null;
+}
+async function cloudPut(id, data){
+  const body = {fields:{data:{stringValue:JSON.stringify(data)}, updatedAt:{integerValue:String(data.updatedAt || 0)}}};
+  const r = await fetch(cloudUrl(id), {method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
+  if(!r.ok) throw new Error('put ' + r.status);
+}
+function cloudQueue(){ if(!cloudId) return; cloudDirty = true; clearTimeout(cloudT); cloudT = setTimeout(cloudPush, 1500); paintCloud(); }
+async function cloudPush(){
+  if(!cloudId || !cloudDirty || cloudBusy) return;
+  cloudBusy = true; cloudDirty = false; paintCloud();
+  try{ await cloudPut(cloudId, JSON.parse(JSON.stringify(S))); cloudAt = Date.now(); cloudErr = ''; }
+  catch(e){ cloudDirty = true; cloudErr = '온라인 저장 실패'; }
+  cloudBusy = false; paintCloud();
+  if(cloudDirty && !cloudErr){ clearTimeout(cloudT); cloudT = setTimeout(cloudPush, 1500); }
+}
+/* 온라인 쪽이 더 새로우면 받아 오고, 이 기기 쪽이 더 새로우면 올림. 학습·시험 중에는 받아 오지 않음 */
+async function cloudPull(){
+  if(!cloudId || cloudBusy) return;
+  if(cloudDirty) return cloudPush();
+  try{
+    const r = await cloudGet(cloudId); cloudErr = '';
+    if(r && (r.updatedAt || 0) > (S.updatedAt || 0)){
+      if(SES || TS) return;
+      S = normalize(r); localSave(); if($('#sheetWrap').hidden) render(); else { renderHead(); paintCloudBox(); }
+    } else if(!r || (S.updatedAt || 0) > (r.updatedAt || 0)){ cloudDirty = true; return cloudPush(); }
+    cloudAt = Date.now();
+  }catch(e){ cloudErr = '연결 실패'; }
+  paintCloud();
+}
+async function cloudConnect(raw){
+  const id = (raw || '').trim().toLowerCase();
+  if(!ID_RE.test(id)) return toast('ID는 영어 소문자·숫자·-·_ 로 3~22자예요');
+  let r;
+  try{ r = await cloudGet(id); }catch(e){ return toast('연결하지 못했어요. 인터넷을 확인해 주세요'); }
+  if(r){ cloudPending = {id, r}; return paintCloudBox(); }
+  await cloudUse(id, false);
+}
+async function cloudUse(id, useRemote){
+  const r = cloudPending && cloudPending.r; cloudPending = null;
+  cloudId = id; try{ localStorage.setItem(CLOUD_KEY, id); }catch(e){}
+  if(useRemote && r){ S = normalize(r); S.set.ok = true; localSave(); cloudAt = Date.now(); }
+  else { S.updatedAt = Date.now(); localSave(); cloudDirty = true; await cloudPush(); }
+  renderHead(); paintCloudBox();
+  toast(cloudErr ? '연결했지만 저장에 실패했어요. 잠시 후 다시 시도해요' : useRemote ? `'${id}'의 온라인 기록을 가져왔어요` : `'${id}'로 온라인 저장을 시작했어요`);
+}
+function cloudOff(b){
+  if(!b.classList.contains('arm')){ b.classList.add('arm'); b.textContent = '한 번 더 누르면 끊기'; setTimeout(() => { if(b.isConnected){ b.classList.remove('arm'); b.textContent = '연결 끊기'; } }, 3000); return; }
+  cloudId = null; cloudDirty = false; clearTimeout(cloudT);
+  try{ localStorage.removeItem(CLOUD_KEY); }catch(e){}
+  paintCloudBox(); toast('연결을 끊었어요. 이제 이 기기에만 저장돼요');
+}
+function cloudStatus(){
+  if(cloudErr) return cloudErr + '. 인터넷이 연결되면 다시 시도해요';
+  if(cloudBusy) return '저장 중…';
+  if(cloudDirty) return '곧 저장해요';
+  return cloudAt ? `동기화됨 ${new Date(cloudAt).toTimeString().slice(0, 5)}` : '연결됨';
+}
+function paintCloud(){ const el = document.getElementById('cloudSt'); if(el) el.textContent = cloudStatus(); }
+function paintCloudBox(){ const el = document.getElementById('cloudBox'); if(el) el.outerHTML = cloudHTML(); }
+function cloudHTML(){
+  let main;
+  if(cloudPending){
+    const r = cloudPending.r, n = Object.keys(r.c || {}).length;
+    const when = r.updatedAt ? new Date(r.updatedAt).toLocaleString('ko-KR', {month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit'}) : '';
+    main = `<p class="ctext">ID <span class="cid">${esc(cloudPending.id)}</span>에 이미 기록이 있어요 (학습한 단어 ${n}개${when ? `, ${when} 수정` : ''}). 어느 쪽을 쓸까요?</p>
+      <button class="primary" data-act="cPull" style="height:48px;font-size:15px">온라인 기록 가져오기</button>
+      <div class="row xrow"><button class="ghost" data-act="cPush">이 기기 기록으로 덮어쓰기</button><button class="ghost" data-act="cCancel">취소</button></div>`;
+  }
+  else if(cloudId) main = `<p class="ctext">ID <span class="cid">${esc(cloudId)}</span>로 온라인에 저장 중이에요. 다른 기기에서 같은 ID로 연결하면 기록이 자동으로 맞춰져요.</p>
+    <div class="row"><button class="ghost" data-act="cSync">지금 동기화</button><button class="ghost" data-act="cOff">연결 끊기</button></div>
+    <p class="cst" id="cloudSt">${cloudStatus()}</p>`;
+  else main = `<p class="ctext">ID를 정해 연결하면 기록이 온라인에 저장되고, 같은 ID로 연결한 기기끼리 자동으로 맞춰져요. 비밀번호가 없어서 ID를 아는 사람은 누구나 보고 고칠 수 있으니 남이 못 맞히는 ID를 쓰세요.</p>
+    <div class="row"><input class="in" id="cloudIn" placeholder="영어 소문자·숫자 3~22자" autocapitalize="off" autocomplete="off" spellcheck="false" style="flex:2"><button class="primary" data-act="cConnect" style="height:48px;font-size:15px">연결</button></div>`;
+  return `<div class="f" id="cloudBox"><span>온라인 저장 (기기 연동)</span>${main}</div>`;
+}
+function cloudBoot(){
+  if(cloudId) cloudPull();
+  setInterval(() => { if(!document.hidden) cloudPull(); }, 60000);
+  document.addEventListener('visibilitychange', () => { if(document.hidden){ if(cloudDirty){ clearTimeout(cloudT); cloudPush(); } } else cloudPull(); });
+  window.addEventListener('online', () => { cloudErr = ''; cloudPull(); });
+}
 
 /* ---------- 카드: [단계, 복습일, 틀린 횟수, 복습 횟수, 마지막 학습일, 시험 오답 수] ---------- */
 const card = id => S.c['k' + id];
@@ -2407,6 +2506,7 @@ function settingsHTML(first){
   <div class="f tg"><span>철자 쓰기 섞기<small>두 번 이상 맞힌 단어는 가끔 뜻을 보고 철자를 쓰게 해요.</small></span><button class="tog" data-act="tog" data-k="spell" aria-pressed="${S.set.spell}" aria-label="철자 쓰기 섞기"></button></div>
   ${canSpeak ? `<div class="f tg"><span>발음 자동 재생<small>단어가 나올 때 영어 발음을 들려줘요.</small></span><button class="tog" data-act="tog" data-k="speak" aria-pressed="${S.set.speak}" aria-label="발음 자동 재생"></button></div>` : ''}
   <div class="f"><span>화면</span><div class="chips">${[['auto', '기기 설정'], ['light', '밝게'], ['dark', '어둡게']].map(([v, l]) => `<button class="chip" data-act="theme" data-v="${v}" aria-pressed="${th === v}">${l}</button>`).join('')}</div></div>`}
+  ${cloudHTML()}
   ${xferHTML()}
   <div class="sh-foot">${first ? '' : '<button class="danger" data-act="reset" id="resetBtn">기록 지우기</button>'}<button class="primary" data-act="${first ? 'begin' : 'closeSheet'}">${first ? '시작하기' : '완료'}</button></div>`;
 }
@@ -2477,6 +2577,12 @@ const ACT = {
   begin(){ S.set.ok = true; save(); closeSheet(); render(); },
   xExport(){ exportData(); },
   xImport(){ xferBox(); },
+  cConnect(){ cloudConnect($('#cloudIn') ? $('#cloudIn').value : ''); },
+  cPull(){ if(cloudPending) cloudUse(cloudPending.id, true); },
+  cPush(b){ if(!cloudPending) return; if(!b.classList.contains('arm')){ b.classList.add('arm'); b.textContent = '한 번 더 누르면 덮어써요'; return; } cloudUse(cloudPending.id, false); },
+  cCancel(){ cloudPending = null; paintCloudBox(); },
+  cSync(){ cloudPull().then(() => toast(cloudErr ? '동기화하지 못했어요' : '동기화했어요')); },
+  cOff(b){ cloudOff(b); },
   xGo(b){ const ta = $('#xferTa'); if(!ta || !ta.value.trim()){ toast('붙여 넣거나 파일을 골라 주세요'); return; } importData(ta.value, b); },
   reset(b){
     if(!b.classList.contains('arm')){ b.classList.add('arm'); b.textContent = '한 번 더 누르면 삭제'; setTimeout(() => { if(b.isConnected){ b.classList.remove('arm'); b.textContent = '기록 지우기'; } }, 3000); return; }
@@ -2546,6 +2652,7 @@ document.addEventListener('keydown', e => {
 
 render();
 if(!S.set.ok) openSheet(settingsHTML(true));
+cloudBoot();
 document.addEventListener('visibilitychange', () => { if(!document.hidden && !SES && !TS) render(); });
 })();
 </script>
