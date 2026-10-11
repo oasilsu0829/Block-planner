@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Noto+Serif+KR:wght@400;600;900&family=IBM+Plex+Sans+KR:wght@400;500;600&family=Share+Tech+Mono&family=Great+Vibes&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Noto+Serif+KR:wght@400;600;900&family=IBM+Plex+Sans+KR:wght@400;500;600&family=Share+Tech+Mono&family=Nanum+Gothic+Coding:wght@400;700&family=Great+Vibes&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#FAFBFE; --ink:#141A2A; --muted:#5E6780; --dim:#838BA0;
@@ -970,6 +970,77 @@ body.th-og{--bg:#0A0614;--ink:#EDE7FF;--muted:#9A8FC0;--dim:#645A88;--grid:rgba(
   --T-fixed:#150E2A;--T-fink:#D9CFFF;--T-display:"Instrument Serif",serif}
 body.th-og .nixie{background:linear-gradient(100deg,#FF9AD5,#9A8CFF,#6FE3FF,#B6FFB0,#FFE58A,#FF9AD5);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;
   animation:holoText 6s linear infinite;filter:drop-shadow(0 0 10px rgba(170,130,255,.6))}
+
+/* 16. 자비스 터미널: 검은 화면 + 청록 HUD, 고정폭 글꼴. 블록은 실선 테두리와 과목 색 막대로 또렷하게 */
+body.th-jarvis{--bg:#02070A;--ink:#DDFBFF;--muted:#7FB3BE;--dim:#4C7680;--grid:rgba(0,229,255,.13);--grid2:rgba(0,229,255,.04);--line:rgba(0,229,255,.18);--hair:rgba(0,229,255,.22);
+  --deep:#00E5FF;--school:#050F13;--now:#FF4D5E;
+  --mono:"Share Tech Mono","Nanum Gothic Coding",ui-monospace,Menlo,monospace;--display:var(--mono);--serif:var(--mono);--num:var(--mono);--sans:var(--mono);
+  --T-bgimg:radial-gradient(circle at 88% 9%,transparent 0 58px,rgba(0,229,255,.14) 59px 60px,transparent 61px 84px,rgba(0,229,255,.08) 85px 86px,transparent 87px),
+    radial-gradient(70% 50% at 50% 0%,rgba(0,229,255,.07),transparent 70%),
+    linear-gradient(rgba(0,229,255,.035) 1px,transparent 1px) 0 0/24px 24px,linear-gradient(90deg,rgba(0,229,255,.035) 1px,transparent 1px) 0 0/24px 24px,#02070A;
+  --T-panel:#030D11;--T-bd:rgba(0,229,255,.45);--T-psh:0 0 0 1px rgba(0,229,255,.08),0 0 14px rgba(0,229,255,.08);
+  --T-card:#051318;--T-cbd:1px solid rgba(0,229,255,.32);--T-sheet:#02090C;--T-in:#000;
+  --T-atext:#00E5FF;--T-accent:#00E5FF;--T-aink:#001014;--T-ash:0 0 12px rgba(0,229,255,.45);
+  --T-run:linear-gradient(90deg,rgba(0,229,255,.24),rgba(0,229,255,.07) 70%),#04161C;--T-rink:#E8FDFF;--T-run-solid:#02070A;
+  --T-rbd:1.5px solid #00E5FF;--T-rsh:0 0 0 1px rgba(0,229,255,.2),0 0 22px rgba(0,229,255,.35);
+  --T-fixed:#08151A;--T-fink:#9FC7CF;--T-sbd:1px solid rgba(0,229,255,.2);--T-r:3px;
+  --T-display:"Share Tech Mono",ui-monospace,monospace;--T-dw:400;--T-title:var(--mono);--T-glow:0 0 14px rgba(0,229,255,.55);--T-knob:#02070A}
+body.th-jarvis,body.th-jarvis button,body.th-jarvis input,body.th-jarvis textarea{font-family:var(--mono);letter-spacing:.01em}
+body.th-jarvis .nixie{color:#E8FDFF;letter-spacing:.02em}
+body.th-jarvis .nixie::after{content:"_";color:#00E5FF;margin-left:2px;animation:jvBlink 1.1s steps(1) infinite}
+@keyframes jvBlink{50%{opacity:0}}
+body.th-jarvis .date small::before{content:"C:\\PLAN> ";color:#00E5FF}
+body.th-jarvis .hour span{color:#4FA9B8;font-family:var(--mono)}
+/* 조작부: 각진 테두리 버튼, 고르면 청록으로 채움 */
+body.th-jarvis :is(.icon,.seg,.dday,.bar,.key,.act,.chip,.ghost,.primary,.pick button,.selfbtn,.stepper button,.timer-row button,.sessbar button,.xfer button,.xfer label,.upd .chk,.toast,.dash,.glass,.in){border-radius:3px!important}
+body.th-jarvis .seg{padding:3px;border:1px solid rgba(0,229,255,.45)}
+body.th-jarvis .seg button{border-radius:2px;color:#7FB3BE}
+body.th-jarvis .dday{border:1px solid #00E5FF;background:#03181E;color:#00E5FF;box-shadow:0 0 12px rgba(0,229,255,.25)}
+body.th-jarvis .dday.soon{border-color:#FF4D5E;color:#FF4D5E;background:#1A0508;box-shadow:0 0 12px rgba(255,77,94,.35)}
+body.th-jarvis .bar{border:1px solid rgba(0,229,255,.45);background:rgba(2,9,12,.92)}
+body.th-jarvis .key{border:1px solid rgba(0,229,255,.3);background:#030D11;box-shadow:none}
+body.th-jarvis .key-red{border-color:#00E5FF;background:#00E5FF;color:#001014;box-shadow:0 0 14px rgba(0,229,255,.4)}
+body.th-jarvis .key-red b{color:#001014}
+body.th-jarvis .key-red span::before,body.th-jarvis .key-red span::after{color:rgba(0,16,20,.55)!important}
+body.th-jarvis .key span::before{content:"[ ";color:rgba(0,229,255,.6)}
+body.th-jarvis .key span::after{content:" ]";color:rgba(0,229,255,.6)}
+/* 블록: 단색 배경 + 실선 테두리 + 왼쪽 과목 색 막대 + 모서리 HUD 표시 */
+body.th-jarvis .blk:where(:not(.school,.fixed,.running,.done)){background:linear-gradient(90deg,var(--c) 0 3px,transparent 3px),#051318;
+  border:1px solid color-mix(in srgb,var(--c) 55%,rgba(0,229,255,.35))}
+body.th-jarvis .blk::before{border-radius:1px;width:6px;height:6px;box-shadow:0 0 8px var(--c)}
+body.th-jarvis .blk:not(.school)::after{content:"";position:absolute;inset:-1px;pointer-events:none;
+  background:linear-gradient(#00E5FF,#00E5FF) 0 0/9px 1.5px,linear-gradient(#00E5FF,#00E5FF) 0 0/1.5px 9px,
+    linear-gradient(#00E5FF,#00E5FF) 100% 100%/9px 1.5px,linear-gradient(#00E5FF,#00E5FF) 100% 100%/1.5px 9px;background-repeat:no-repeat;opacity:.75}
+body.th-jarvis .blk .title{font-family:var(--mono);color:#E8FDFF;letter-spacing:0}
+body.th-jarvis .blk .meta{color:#7FB3BE}
+body.th-jarvis .meta .tag{border-radius:2px;color:#E8FDFF;background:color-mix(in srgb,var(--c) 30%,#051318)}
+body.th-jarvis .blk.running .title::before{content:"▶ RUN ";color:#00E5FF;font-size:.85em}
+body.th-jarvis .blk.running::after{opacity:1}
+body.th-jarvis .blk.done{border:1px solid rgba(0,229,255,.16);background:#03090C}
+body.th-jarvis .blk.done .title::before{content:"[OK] ";color:#3DDC97}
+body.th-jarvis .blk.done::after{opacity:.25}
+body.th-jarvis .dchk{display:none}
+body.th-jarvis .blk.done .blk-body{padding-left:14px}
+body.th-jarvis .blk.fixed{border:1px solid rgba(127,179,190,.4)}
+body.th-jarvis .blk.fixed .title::before{content:"■ ";color:#7FB3BE}
+body.th-jarvis .school .per{border-radius:2px;background:#02070A;color:#00E5FF;box-shadow:0 0 0 1px rgba(0,229,255,.55)}
+body.th-jarvis .school.cur{box-shadow:0 0 0 1.5px #00E5FF,0 0 16px rgba(0,229,255,.3)}
+body.th-jarvis .act{border:1px solid rgba(0,229,255,.45);background:#02070A;color:#00E5FF}
+body.th-jarvis .running .act{border-color:#00E5FF}
+body.th-jarvis .mband{border-color:rgba(255,176,0,.45);background:rgba(255,176,0,.05)}
+body.th-jarvis .mband .mtag{color:#FFB000;border-color:rgba(255,176,0,.6);background:#02070A}
+body.th-jarvis .mband .mlb{color:#FFB000}
+body.th-jarvis .brk span{border-radius:2px;border:1px solid rgba(0,229,255,.25)}
+body.th-jarvis .now{box-shadow:0 0 8px #FF4D5E}
+/* 시트·입력 */
+body.th-jarvis .sheet{border-radius:6px;border:1px solid rgba(0,229,255,.55);box-shadow:0 0 0 1px rgba(0,229,255,.1),0 0 40px rgba(0,229,255,.15),0 30px 80px rgba(0,0,0,.7)}
+body.th-jarvis .sh-head h2::before,body.th-jarvis .stats>h2::before,body.th-jarvis .settle>h2::before{content:"> ";color:#00E5FF}
+body.th-jarvis .in{caret-color:#00E5FF;border-color:rgba(0,229,255,.4)}
+body.th-jarvis .in:focus{border-color:#00E5FF;box-shadow:0 0 0 1px #00E5FF,0 0 12px rgba(0,229,255,.3)}
+body.th-jarvis .knob{box-shadow:0 0 0 1px #00E5FF,0 0 12px rgba(0,229,255,.35)}
+body.th-jarvis .knob-cap i{background:#00E5FF}
+body.th-jarvis .toast{border:1px solid #00E5FF;background:#02070A;color:#DDFBFF}
+body.th-jarvis .el{border-radius:3px}
 
 /* 테마 고르기 */
 .thgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0 6px}
@@ -2141,7 +2212,8 @@ const THEMES = [
   {id:'aero',      name:'프루티거 에어로', need:'헬륨 He 획득',      ok:c => c.has('He'),           pv:['#7FD3F5','#FFFFFF','#2BB5EC','#0B3550']},
   {id:'hk',        name:'80년대 홍콩',     need:'네온 Ne 획득',      ok:c => c.has('Ne'),           pv:['#0A1113','#0E1618','#FF2E63','#2EE6D6']},
   {id:'film',      name:'바랜 필름',       need:'은 Ag 획득',        ok:c => c.has('Ag'),           pv:['#F1E4C8','#FCF5E3','#D8452A','#FF8A1E']},
-  {id:'catalog',   name:'캐주얼 오디오',   need:'네오디뮴 Nd 획득',  ok:c => c.has('Nd'),           pv:['#2E9CD0','#FFFFFF','#24346E','#1E2A5A']}
+  {id:'catalog',   name:'캐주얼 오디오',   need:'네오디뮴 Nd 획득',  ok:c => c.has('Nd'),           pv:['#2E9CD0','#FFFFFF','#24346E','#1E2A5A']},
+  {id:'jarvis',    name:'자비스 터미널',   need:'기본',              ok:() => true,                 pv:['#02070A','#051318','#00E5FF','#DDFBFF']}
 ];
 const themesFor = c => new Set(THEMES.filter(t => t.ok(c)).map(t => t.id));
 /* 배경 사진 (기본 테마 전용). 기본 배경은 그라데이션이라 흐리게 하면 아이폰 배경화면처럼 보임. lum = 대략의 밝기 */
@@ -3376,8 +3448,9 @@ statsEl.addEventListener('change', e => {
 
 /* ---------- 업데이트 내역 ----------
    새 버전을 올릴 때 APP_VERSION을 올리고 CHANGELOG 맨 앞에 한 줄 추가 */
-const APP_VERSION = '2.4';
+const APP_VERSION = '2.5';
 const CHANGELOG = [
+  {v:'2.5', d:'2026-10-11', t:'새 테마 자비스 터미널: 검은 화면에 청록 HUD, 고정폭 글꼴. 블록은 실선 테두리와 과목 색 막대로 또렷하게 (결산 → 테마)'},
   {v:'2.4', d:'2026-10-11', t:'10/11부터 초과 공부 보상 두 배(15분마다 +1, 최대 +12), 정확도 비중 36% → 24%'},
   {v:'2.3', d:'2026-10-09', t:'고정 일정에 기간 정하기: 특강처럼 정한 날짜 사이에만 반복되고 끝나면 저절로 사라짐'},
   {v:'2.2', d:'2026-10-09', t:'리퀴드 글라스 배경: 기본 배경 7가지 또는 내 사진을 흐리고 어둡게 깔기 (결산 → 테마). 온라인 저장으로 다른 기기와도 맞춰짐'},
