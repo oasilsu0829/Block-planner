@@ -1100,20 +1100,20 @@ body.th-jarvis .knob{background:#0C0C0C!important;border:1px solid #5E5E5E!impor
 body.th-jarvis .knob-cap i{background:#CCCCCC}
 body.th-jarvis .sheet{animation:none}
 
-/* 17. 밤 작업실: linear.app DESIGN.md 토큰(바탕·면·글씨·선·모서리·간격) + 포인트 색만 청록으로.
+/* 17. 밤 작업실: linear.app DESIGN.md 토큰(바탕·면·글씨·선·모서리·간격) + 포인트 색만 오렌지로.
    그림자 없이 면의 밝기 단계로 구분, 블록은 선 1px + 왼쪽 과목 색 막대. 모션은 Emil 수치(ease-in 없음, 300ms 미만) */
 body.th-studio{--bg:#010102;--ink:#f7f8f8;--muted:#8a8f98;--dim:#62666d;--grid:#18191a;--grid2:transparent;--line:#23252a;--hair:#23252a;
-  --deep:#3fb8a6;--school:#0f1011;--now:#3fb8a6;
+  --deep:#FF7A3D;--school:#0f1011;--now:#FF7A3D;
   --st-sans:Inter,"IBM Plex Sans KR",-apple-system,system-ui,sans-serif;--display:var(--st-sans);--serif:var(--st-sans);--num:var(--st-sans);--sans:var(--st-sans);
   --st-out:cubic-bezier(.23,1,.32,1);--st-drawer:cubic-bezier(.32,.72,0,1);
   --T-bgimg:#010102;--T-panel:#0f1011;--T-bd:#23252a;--T-psh:none;--T-card:#141516;--T-cbd:1px solid #23252a;--T-csh:none;--T-sheet:#0f1011;--T-in:#141516;
-  --T-atext:#3fb8a6;--T-accent:#3fb8a6;--T-aink:#010102;--T-ash:none;
-  --T-run:#141516;--T-rink:#f7f8f8;--T-run-solid:#010102;--T-rbd:1px solid #3fb8a6;--T-rsh:0 0 0 3px rgba(63,184,166,.12);
+  --T-atext:#FF7A3D;--T-accent:#FF7A3D;--T-aink:#010102;--T-ash:none;
+  --T-run:#141516;--T-rink:#f7f8f8;--T-run-solid:#010102;--T-rbd:1px solid #FF7A3D;--T-rsh:0 0 0 3px rgba(255,122,61,.12);
   --T-fixed:#0f1011;--T-fink:#8a8f98;--T-sbd:1px solid #23252a;--T-r:8px;--T-display:var(--st-sans);--T-dw:600;--T-glow:none;--T-knob:#141516}
 body.th-studio,body.th-studio button,body.th-studio input,body.th-studio textarea{font-family:var(--st-sans);-webkit-font-smoothing:antialiased}
 body.th-studio .nixie{font-weight:600;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
 body.th-studio .date small{color:#8a8f98}
-body.th-studio .date small em{color:#3fb8a6}
+body.th-studio .date small em{color:#FF7A3D}
 /* 조작부: 선 1px + 한 단계 밝은 면. 고른 것은 면을 밝게, 주요 버튼만 청록 */
 body.th-studio :is(.icon,.seg,.dday,.ghost,.chip,.act,.stepper button,.timer-row button,.selfbtn,.pick button,.sessbar button,.xfer button,.xfer label,.upd .chk){
   background:#141516;border:1px solid #23252a;box-shadow:none;color:#f7f8f8;-webkit-backdrop-filter:none;backdrop-filter:none}
@@ -1123,21 +1123,21 @@ body.th-studio .seg button[aria-selected="true"]{background:#23252a;color:#f7f8f
 body.th-studio .chip[aria-pressed="true"],body.th-studio .selfbtn.on{background:#23252a;border-color:#34343a;color:#f7f8f8;box-shadow:none}
 body.th-studio .chip i{width:6px;height:6px}
 body.th-studio :is(.primary,.key-red,.pick button:first-child,.xfer button.go,.upd .chk.go,.act.on,.act.chk.on,.act.lp.full,.prog button:last-child[aria-pressed="true"],.hint button){
-  background:#3fb8a6;color:#010102;border:1px solid #3fb8a6;box-shadow:none;font-weight:600}
+  background:#FF7A3D;color:#010102;border:1px solid #FF7A3D;box-shadow:none;font-weight:600}
 body.th-studio .pick button:first-child small,body.th-studio .pick button:first-child i{color:#010102}
 body.th-studio .dday{border-radius:8px;color:#d0d6e0}
 body.th-studio .dday b{font-weight:600;color:#f7f8f8}
-body.th-studio .dday.soon{border-color:#3fb8a6}
-body.th-studio .dday.soon b{color:#3fb8a6}
+body.th-studio .dday.soon{border-color:#FF7A3D}
+body.th-studio .dday.soon b{color:#FF7A3D}
 body.th-studio .dash{border-radius:12px}
 body.th-studio .dash>.memobar .mk{color:#d0d6e0}
-body.th-studio .dash>.memobar .mk::before{background:#3fb8a6}
+body.th-studio .dash>.memobar .mk::before{background:#FF7A3D}
 body.th-studio .bar{background:#0f1011;border:1px solid #23252a;border-radius:14px;box-shadow:none}
 body.th-studio .key{background:transparent;border:0;box-shadow:none;color:#d0d6e0;border-radius:10px}
 body.th-studio .key-bk b,body.th-studio .key-iv b,body.th-studio .key.on-focus{color:#8a8f98}
 body.th-studio .key-red,body.th-studio .key-red b{color:#010102}
 body.th-studio .in{background:#141516;border:1px solid #23252a;border-radius:8px}
-body.th-studio .in:focus{border-color:#3fb8a6;box-shadow:0 0 0 3px rgba(63,184,166,.15)}
+body.th-studio .in:focus{border-color:#FF7A3D;box-shadow:0 0 0 3px rgba(255,122,61,.15)}
 body.th-studio .sheet{border:1px solid #23252a;border-radius:16px;box-shadow:0 24px 64px rgba(0,0,0,.6);animation:stUp 300ms var(--st-drawer)}
 @keyframes stUp{from{transform:translateY(32px);opacity:0}to{transform:none;opacity:1}}
 body.th-studio .scrim{background:rgba(0,0,0,.55);-webkit-backdrop-filter:none;backdrop-filter:none}
@@ -1146,8 +1146,8 @@ body.th-studio .glass,body.th-studio .pick button{border-radius:12px}
 /* 타임라인: 면 + 선 1px + 왼쪽 과목 색 막대 3px */
 body.th-studio .hour{border-top-color:#18191a}
 body.th-studio .hour span{color:#62666d;font-variant-numeric:tabular-nums;font-weight:500}
-body.th-studio .now{height:1px;background:#3fb8a6;box-shadow:none}
-body.th-studio .now::before{background:#3fb8a6;box-shadow:0 0 0 3px rgba(63,184,166,.18)}
+body.th-studio .now{height:1px;background:#FF7A3D;box-shadow:none}
+body.th-studio .now::before{background:#FF7A3D;box-shadow:0 0 0 3px rgba(255,122,61,.18)}
 body.th-studio .blk{background:linear-gradient(90deg,var(--c) 0 3px,transparent 3px),#141516;border:1px solid #23252a;border-radius:8px;box-shadow:none;
   transition:top 200ms var(--st-out),height 200ms var(--st-out)}
 body.th-studio .blk::before{display:none}
@@ -1156,11 +1156,11 @@ body.th-studio .blk .title{color:#f7f8f8;font-weight:500;letter-spacing:-.01em}
 body.th-studio .blk .meta{color:#8a8f98}
 body.th-studio .meta .tm,body.th-studio .running .st{font-variant-numeric:tabular-nums}
 body.th-studio .meta .tag{color:#d0d6e0;background:#23252a;border-radius:4px}
-body.th-studio .blk.running{background:linear-gradient(90deg,var(--c) 0 3px,transparent 3px),#141516;border:1px solid #3fb8a6;box-shadow:0 0 0 3px rgba(63,184,166,.12)}
-body.th-studio .blk.running .st{color:#3fb8a6;font-weight:600}
-body.th-studio .running .st::before{background:#3fb8a6;box-shadow:none}
+body.th-studio .blk.running{background:linear-gradient(90deg,var(--c) 0 3px,transparent 3px),#141516;border:1px solid #FF7A3D;box-shadow:0 0 0 3px rgba(255,122,61,.12)}
+body.th-studio .blk.running .st{color:#FF7A3D;font-weight:600}
+body.th-studio .running .st::before{background:#FF7A3D;box-shadow:none}
 body.th-studio .running .act{background:#18191a;border:1px solid #34343a;color:#f7f8f8}
-body.th-studio .running .act.on{background:#3fb8a6;color:#010102;border-color:#3fb8a6}
+body.th-studio .running .act.on{background:#FF7A3D;color:#010102;border-color:#FF7A3D}
 body.th-studio .running .grip{color:#8a8f98}
 body.th-studio .blk.done{background:linear-gradient(90deg,#34343a 0 3px,transparent 3px),#0f1011;border:1px solid #18191a}
 body.th-studio .blk.done .title,body.th-studio .blk.done .meta{color:#62666d}
@@ -1169,7 +1169,7 @@ body.th-studio .blk.done .blk-body{padding-left:26px}
 body.th-studio .blk.school{background:#0f1011;border:1px solid #23252a;border-radius:8px}
 body.th-studio .school .per{background:#18191a;color:#d0d6e0;box-shadow:inset 0 0 0 1px #34343a}
 body.th-studio .school .blk-body{padding-left:38px}
-body.th-studio .school.cur{border-color:#3fb8a6;box-shadow:0 0 0 3px rgba(63,184,166,.12)}
+body.th-studio .school.cur{border-color:#FF7A3D;box-shadow:0 0 0 3px rgba(255,122,61,.12)}
 body.th-studio .blk.fixed{background:#0f1011;border:1px dashed #34343a}
 body.th-studio .blk.fixed .title{color:#d0d6e0}
 body.th-studio .mband{border-color:#23252a;background:#0a0b0c}
@@ -1179,13 +1179,46 @@ body.th-studio .brk span{background:#010102;color:#62666d;border:1px solid #2325
 body.th-studio .brk.bad span{background:#2a1214;color:#ff8a8f;border-color:#4a1d21}
 /* 결산 */
 body.th-studio .meter i,body.th-studio .cmp,body.th-studio .prog{background:#18191a}
-body.th-studio .meter i b,body.th-studio .cmp .a{background:#3fb8a6}
+body.th-studio .meter i b,body.th-studio .cmp .a{background:#FF7A3D}
 body.th-studio .meter.vol i b{background:#62666d}
 body.th-studio .prog button[aria-pressed="true"]{background:#23252a;color:#f7f8f8}
 body.th-studio .dval,body.th-studio .lead b,body.th-studio .rcpt .tot b{font-weight:600;letter-spacing:-.03em}
 /* 모션: 누르면 살짝 줄었다가 돌아옴 (160ms, ease-out) */
 body.th-studio :is(button,.key,.act,.chip,.icon){transition:transform 160ms var(--st-out),background-color 150ms var(--st-out),border-color 150ms var(--st-out)}
 body.th-studio :is(button,.key,.act,.chip,.icon):active{transform:scale(.97)}
+
+/* 모션 (Emil Kowalski 규칙을 앱에 맞게): ease-in 없음, UI는 300ms 미만, transform·opacity만.
+   홈페이지처럼 스크롤 등장 대신, 처음 열 때·날짜/탭을 바꿀 때만 등장 애니메이션 (1초마다 다시 그려도 반복되지 않게) */
+@keyframes stIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes stFade{from{opacity:0}to{opacity:1}}
+@keyframes stDown{to{transform:translateY(40px);opacity:0}}
+@keyframes stFadeOut{to{opacity:0}}
+body.th-studio main[data-enter] .blk{animation:stIn 220ms var(--st-out) both}
+body.th-studio main[data-enter] :is(.settle,.stats,.dex)>*{animation:stIn 240ms var(--st-out) both}
+body.th-studio main[data-enter] :is(.settle,.stats,.dex)>:nth-child(2){animation-delay:50ms}
+body.th-studio main[data-enter] :is(.settle,.stats,.dex)>:nth-child(3){animation-delay:100ms}
+body.th-studio main[data-enter] :is(.settle,.stats,.dex)>:nth-child(4){animation-delay:150ms}
+body.th-studio main[data-enter] :is(.settle,.stats,.dex)>:nth-child(n+5){animation-delay:200ms}
+/* 시트: 열 때 300ms 서랍 곡선 + 안쪽 항목 차례로(40ms 간격), 닫을 때는 더 빠르게 180ms */
+body.th-studio .scrim{animation:stFade 200ms var(--st-out)}
+body.th-studio .sheet-wrap.entering .sheet>*{animation:stIn 260ms var(--st-out) both}
+body.th-studio .sheet-wrap.entering .sheet>:nth-child(2){animation-delay:40ms}
+body.th-studio .sheet-wrap.entering .sheet>:nth-child(3){animation-delay:80ms}
+body.th-studio .sheet-wrap.entering .sheet>:nth-child(4){animation-delay:120ms}
+body.th-studio .sheet-wrap.entering .sheet>:nth-child(n+5){animation-delay:160ms}
+body.th-studio .sheet-wrap.closing .sheet{animation:stDown 180ms var(--st-out) forwards}
+body.th-studio .sheet-wrap.closing .scrim{animation:stFadeOut 180ms var(--st-out) forwards}
+/* 토스트: 아래에서 살짝 올라오며(Sonner처럼 일부러 조금 느린 ease 400ms), 사라질 땐 200ms */
+body.th-studio .toast{transform:translate(-50%,8px);transition:opacity 200ms var(--st-out),transform 200ms var(--st-out)}
+body.th-studio .toast.show{transform:translate(-50%,0);transition:opacity 400ms ease,transform 400ms ease}
+/* 블록 끌기: 들어 올리면 살짝 커지고 그림자 */
+body.th-studio .blk.dragging{transform:scale(1.02);box-shadow:0 12px 32px rgba(0,0,0,.55);transition:transform 150ms var(--st-out),box-shadow 150ms var(--st-out)}
+/* 마우스가 있는 기기에서만 호버 */
+@media (hover:hover) and (pointer:fine){
+  body.th-studio :is(.icon,.ghost,.chip,.act,.pick button,.seg button,.selfbtn):hover{background-color:#18191a}
+  body.th-studio :is(.primary,.key-red,.pick button:first-child):hover{background-color:#ff8f5c}
+  body.th-studio .blk:not(.running):hover{border-color:#34343a}
+}
 
 /* 테마 고르기 */
 .thgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0 6px}
@@ -2012,7 +2045,11 @@ function updLed(){
   for(const k in S.days) if(S.days[k].some(b => b.runningSince)){ on = true; break; }
   $('#led').classList.toggle('on', on);
 }
+let enterKey = '', enterT = null;
 function render(){
+  /* 날짜나 탭이 바뀐 순간에만 등장 애니메이션 표시를 켬 (테마 CSS가 쓸 때만 보임) */
+  const ek = cur + '|' + view;
+  if(ek !== enterKey){ enterKey = ek; scroller.dataset.enter = ''; clearTimeout(enterT); enterT = setTimeout(() => delete scroller.dataset.enter, 600); }
   const d = dateOf(cur), t = todayKey();
   const ds = pad(d.getMonth()+1) + pad(d.getDate());
   $('#dateMain').textContent = ds.slice(0,2) + '.' + ds.slice(2);
@@ -2358,7 +2395,7 @@ const THEMES = [
   {id:'hk',        name:'80년대 홍콩',     need:'네온 Ne 획득',      ok:c => c.has('Ne'),           pv:['#0A1113','#0E1618','#FF2E63','#2EE6D6']},
   {id:'film',      name:'바랜 필름',       need:'은 Ag 획득',        ok:c => c.has('Ag'),           pv:['#F1E4C8','#FCF5E3','#D8452A','#FF8A1E']},
   {id:'catalog',   name:'캐주얼 오디오',   need:'네오디뮴 Nd 획득',  ok:c => c.has('Nd'),           pv:['#2E9CD0','#FFFFFF','#24346E','#1E2A5A']},
-  {id:'studio',    name:'밤 작업실',       need:'기본',              ok:() => true,                 pv:['#010102','#141516','#3fb8a6','#f7f8f8']},
+  {id:'studio',    name:'밤 작업실',       need:'기본',              ok:() => true,                 pv:['#010102','#141516','#FF7A3D','#f7f8f8']},
   {id:'jarvis',    name:'명령 프롬프트',   need:'기본',              ok:() => true,                 pv:['#0C0C0C','#0C0C0C','#CCCCCC','#CCCCCC']}
 ];
 const themesFor = c => new Set(THEMES.filter(t => t.ok(c)).map(t => t.id));
@@ -3072,7 +3109,20 @@ function openSheet(mode, id, kind){
   sheetWrap.hidden = false;
   if(mode === 'add') setTimeout(() => $('#fTitle')?.focus(), 60);
 }
-function closeSheet(){ SH = null; sheetWrap.hidden = true; }
+let sheetCloseT = null;
+const sheetAnim = () => document.body.classList.contains('th-studio') && !matchMedia('(prefers-reduced-motion: reduce)').matches;
+function closeSheet(){
+  SH = null;
+  if(!sheetAnim() || sheetWrap.hidden){ sheetWrap.hidden = true; return; }
+  sheetWrap.classList.add('closing'); clearTimeout(sheetCloseT);
+  /* 닫히는 사이 다른 시트가 열렸으면(SH가 다시 생김) 숨기지 않음 */
+  sheetCloseT = setTimeout(() => { sheetWrap.classList.remove('closing'); if(!SH) sheetWrap.hidden = true; }, 180);
+}
+new MutationObserver(() => {
+  if(sheetWrap.hidden || !sheetAnim()) return;
+  sheetWrap.classList.remove('closing'); sheetWrap.classList.add('entering');
+  setTimeout(() => sheetWrap.classList.remove('entering'), 450);
+}).observe(sheetWrap, {attributes:true, attributeFilter:['hidden']});
 
 function renderSheet(){
   const {mode, d, lecture, done} = SH, review = SH.review || lecture;
@@ -3594,8 +3644,9 @@ statsEl.addEventListener('change', e => {
 
 /* ---------- 업데이트 내역 ----------
    새 버전을 올릴 때 APP_VERSION을 올리고 CHANGELOG 맨 앞에 한 줄 추가 */
-const APP_VERSION = '2.9';
+const APP_VERSION = '3.0';
 const CHANGELOG = [
+  {v:'3.0', d:'2026-10-19', t:'밤 작업실: 포인트 색을 오렌지로, 등장·시트·토스트·누름 모션을 다듬음 (처음 열 때와 날짜·탭을 바꿀 때만 등장)'},
   {v:'2.9', d:'2026-10-19', t:'새 테마 밤 작업실: 어두운 면 단계와 선 1px로 정리한 미니멀 다크, 포인트 청록 (결산 → 테마)'},
   {v:'2.8', d:'2026-10-13', t:'명령 프롬프트: 교시 번호 [1]이 세로로 쪼개져 잘리던 문제 수정'},
   {v:'2.7', d:'2026-10-11', t:'명령 프롬프트: 점선 상자는 타임라인 블록에만, 나머지는 가는 실선으로'},
