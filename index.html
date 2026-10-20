@@ -1034,7 +1034,7 @@ function fixedHTML(x){
   }
   if(x.f.school){
     const m = nowMin(), cur_ = cur === todayKey() && m >= x.s && m < x.s + x.d;
-    return `<div class="blk school${cur_ ? ' cur' : ''}${h < 44 ? ' compact' : ''}${h < 26 ? ' tiny' : ''}" data-fid="${x.f.id}" style="top:${top}px;height:${h}px;--c:${subjectColor(x.f.title)}">
+    return `<div class="blk school${cur_ ? ' cur' : ''}${h < 44 ? ' compact' : ''}${h < 26 ? ' tiny' : ''}" data-fid="${x.f.id}" style="top:${top}px;height:${h}px;${x.pos || ''}--c:${subjectColor(x.f.title)}">
       <span class="per" aria-label="${x.f.period}교시">${x.f.period}</span>
       <div class="blk-body"><span class="title"><span>${esc(x.f.title)}</span></span>
         <div class="meta"><span class="tm">${fmt(x.s)}–${fmt(x.s + x.d)}</span></div></div></div>`;
@@ -1043,7 +1043,7 @@ function fixedHTML(x){
     /* 식사: 블록이 아니라 띠. 그 위에 블록을 올릴 수 있음. 왼쪽 표를 누르면 수정 */
     return `<div class="mband" style="top:${top}px;height:${h}px"><button class="jtag mtag" data-fid="${x.f.id}" aria-label="${esc(x.f.title)} 시간, 누르면 수정">${esc(x.f.title).slice(0, 3)}<br>${fmt(x.s)}</button><span class="mlb">${esc(x.f.title)} ${fmt(x.s)}–${fmt(x.s + x.d)}</span></div>`;
   }
-  return `<div class="blk fixed${h < 58 ? ' compact' : ''}${h < 26 ? ' tiny' : ''}" data-fid="${x.f.id}" style="top:${top}px;height:${h}px;--c:var(--ink)">
+  return `<div class="blk fixed${h < 58 ? ' compact' : ''}${h < 26 ? ' tiny' : ''}" data-fid="${x.f.id}" style="top:${top}px;height:${h}px;${x.pos || ''}--c:var(--ink)">
     <div class="blk-body"><span class="title"><span>${esc(x.f.title)}</span></span>
       <div class="meta"><span class="tm">${fmt(x.s)}–${fmt(x.s + x.d)}</span><span>${x.f.until ? `~${+x.f.until.slice(5,7)}/${+x.f.until.slice(8)}` : '고정'}</span></div></div></div>`;
 }
@@ -1055,6 +1055,14 @@ function renderTimeline(){
   tl.style.height = (dayEnd - DAY_START)*PX + 'px';
   let html = '';
   for(let m = DAY_START; m <= dayEnd; m += 60) html += `<div class="hour" style="top:${(m-DAY_START)*PX}px"><span>${pad((m/60)%24)}</span></div>`;
+  /* 시간이 겹치는 수업·고정 일정은 나란히 칸을 나눠 그림 (겹쳐 쓰이지 않게) */
+  const vis = fx.filter(x => !x.self && !x.f.meal);
+  for(const x of vis){
+    const grp = vis.filter(y => y.s < x.s + x.d && x.s < y.s + y.d);
+    if(grp.length < 2) continue;
+    const i = grp.indexOf(x), w = 100/grp.length;
+    x.pos = `left:calc(${(i*w).toFixed(2)}% + ${i ? 2 : 0}px);right:${(100 - (i + 1)*w).toFixed(2)}%;`;
+  }
   html += '<div class="lane" id="lane">' + fx.map(fixedHTML).join('') + arr.map(blockHTML).join('') + '</div>';
   html += '<div class="now" id="nowLine" hidden></div>';
   if(!list.length && !fx.length) html += `<div class="empty" style="top:${Math.max(0, (Math.min(placeStart(), 22*60) - DAY_START)*PX)}px"><b>+ 추가</b>에서 문풀을 넣으세요.<br>수업과 강의 시간은 알아서 피해서 놓여요.<br>▶로 시간을 재고 ✓로 끝내면, 다음부터 걸릴 시간을 제안해요.</div>`;
@@ -1659,8 +1667,9 @@ statsEl.addEventListener('change', e => {
 
 /* ---------- 업데이트 내역 ----------
    새 버전을 올릴 때 APP_VERSION을 올리고 CHANGELOG 맨 앞에 한 줄 추가 */
-const APP_VERSION = '4.1';
+const APP_VERSION = '4.2';
 const CHANGELOG = [
+  {v:'4.2', d:'2026-10-21', t:'같은 시간에 수업과 고정 일정이 있으면 겹쳐 쓰이지 않고 나란히 보이게'},
   {v:'4.1', d:'2026-10-20', t:'교시 번호와 수업 과목 이름이 겹쳐 보이던 문제 수정'},
   {v:'4.0', d:'2026-10-19', t:'기능만 남긴 새 화면: 밀도 등급·원소 도감·테마·쉬는시간 점수를 빼고, 글자 위주의 깔끔한 화면(밝음/어두움 자동)과 부드러운 움직임으로. 뽀모도로와 문풀 예상 시간 제안은 그대로'},
   {v:'3.1', d:'2026-10-19', t:'밤 작업실: 포인트 색을 흰색으로 (무채색)'},
