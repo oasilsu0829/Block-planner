@@ -122,9 +122,9 @@ main::-webkit-scrollbar{display:none}
 .blk.lecture .title::before{content:"▸ ";color:var(--c)}
 .blk.school{z-index:1;background:var(--soft);border-color:transparent}
 .blk.school::before{display:none}
-.school .per{position:absolute;left:9px;top:7px;font-size:11.5px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+.school .per{flex:none;align-self:flex-start;padding:7px 0 0 10px;font-size:11.5px;line-height:21px;font-weight:700;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
 .school .per::after{content:"교시";font-weight:500;font-size:10px;margin-left:1px}
-.school .blk-body{padding-left:44px}
+.school .blk-body{padding-left:8px}
 .school .title{font-weight:500;font-size:14px}
 .blk.school.cur{background:var(--card);border-color:var(--ink)}
 .blk.fixed{z-index:1;background:var(--soft);border-color:transparent}
@@ -134,7 +134,7 @@ main::-webkit-scrollbar{display:none}
 .compact .meta{display:none}
 .compact .blk-actions{align-items:center;padding-top:0}
 .compact .act{width:26px;height:26px}
-.school.compact .per{top:50%;transform:translateY(-50%)}
+.school.compact .per{align-self:center;padding-top:0}
 .compact .dchk{top:50%;transform:translateY(-50%)}
 .tiny .blk-actions{display:none}
 .tiny .title{font-size:12.5px}
@@ -1659,8 +1659,9 @@ statsEl.addEventListener('change', e => {
 
 /* ---------- 업데이트 내역 ----------
    새 버전을 올릴 때 APP_VERSION을 올리고 CHANGELOG 맨 앞에 한 줄 추가 */
-const APP_VERSION = '4.0';
+const APP_VERSION = '4.1';
 const CHANGELOG = [
+  {v:'4.1', d:'2026-10-20', t:'교시 번호와 수업 과목 이름이 겹쳐 보이던 문제 수정'},
   {v:'4.0', d:'2026-10-19', t:'기능만 남긴 새 화면: 밀도 등급·원소 도감·테마·쉬는시간 점수를 빼고, 글자 위주의 깔끔한 화면(밝음/어두움 자동)과 부드러운 움직임으로. 뽀모도로와 문풀 예상 시간 제안은 그대로'},
   {v:'3.1', d:'2026-10-19', t:'밤 작업실: 포인트 색을 흰색으로 (무채색)'},
   {v:'3.0', d:'2026-10-19', t:'밤 작업실: 포인트 색을 오렌지로, 등장·시트·토스트·누름 모션을 다듬음 (처음 열 때와 날짜·탭을 바꿀 때만 등장)'},
