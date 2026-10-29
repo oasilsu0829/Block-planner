@@ -410,6 +410,20 @@ body.viewing .fab,body.viewing #focusBtn{display:none!important}
 .cmap .p{fill:var(--map-pending)}
 .cmap .e{fill:var(--map-empty)}
 
+/* ── 가로 모드: 왼쪽에 머리(날짜·주간 줄·지금/메모)와 탭바, 오른쪽에 타임라인 ── */
+@media (orientation: landscape) and (min-width: 640px){
+  body{padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+  .app{display:grid;grid-template-columns:clamp(340px,38%,460px) minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;max-width:1280px}
+  .topwrap{grid-column:1;grid-row:1;min-height:0;overflow-y:auto;scrollbar-width:none;padding-bottom:16px}
+  .topwrap::-webkit-scrollbar{display:none}
+  .nixie{font-size:clamp(72px,9vw,132px)}
+  .tabs{grid-column:1;grid-row:2}
+  .screen{grid-column:2;grid-row:1 / -1;border-left:var(--line-thin) solid var(--ink);margin-top:14px}
+  .fab{right:max(calc(var(--pad-x) + env(safe-area-inset-right,0px)),calc(50% - 640px + var(--pad-x)));bottom:calc(20px + env(safe-area-inset-bottom,0px))}
+  .toast{bottom:calc(92px + env(safe-area-inset-bottom,0px))}
+  .viewbar{left:var(--pad-x);right:auto;width:calc(clamp(340px,38vw,460px) - 2*var(--pad-x));margin:0;bottom:calc(68px + env(safe-area-inset-bottom,0px))}
+}
+
 body.sheet-open main{overflow:hidden}
 @media (prefers-reduced-motion: reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
 </style>
@@ -1744,8 +1758,9 @@ statsEl.addEventListener('change', e => {
 
 /* ---------- 업데이트 내역 ----------
    새 버전을 올릴 때 APP_VERSION을 올리고 CHANGELOG 맨 앞에 한 줄 추가 */
-const APP_VERSION = '5.0';
+const APP_VERSION = '5.1';
 const CHANGELOG = [
+  {v:'5.1', d:'2026-10-29', t:'가로 모드: 화면을 눕히면 왼쪽에 날짜·주간 줄·지금/메모와 탭바, 오른쪽에 타임라인'},
   {v:'5.0', d:'2026-10-29', t:'디자인 언어 v1.0으로 새 화면: 흑백 선과 열 정렬, 파랑은 오늘·진행·다음에만, 빨강은 지연·초과에만. 제목 명조·본문 고딕·숫자 Space Grotesk. 큰 날짜와 주간 줄, 하단 탭바, 진행률은 컨택트 맵으로. 과목은 색 대신 이름으로 구분하고, 어두운 모드는 검정 바탕 투사 모드'},
   {v:'4.2', d:'2026-10-21', t:'같은 시간에 수업과 고정 일정이 있으면 겹쳐 쓰이지 않고 나란히 보이게'},
   {v:'4.1', d:'2026-10-20', t:'교시 번호와 수업 과목 이름이 겹쳐 보이던 문제 수정'},
