@@ -164,9 +164,11 @@ main::-webkit-scrollbar{display:none}
 .grip::before{content:"⋮⋮";position:absolute;inset:0;display:grid;place-items:center;font-size:10px;letter-spacing:-3px;color:var(--muted)}
 .resize{position:absolute;left:0;right:22px;bottom:0;height:12px;touch-action:none;cursor:ns-resize}
 .resize::after{content:"";position:absolute;left:50%;bottom:3px;width:18px;height:2px;margin-left:-9px;background:var(--map-pending)}
-.mband{position:absolute;left:0;right:0;z-index:0;pointer-events:none;border-left:var(--line-bold) solid var(--ink)}
+/* 식사: 반투명 면으로 채워 한눈에 보이게 (블록은 그 위에 올라감) */
+.mband{position:absolute;left:0;right:0;z-index:0;pointer-events:none;border-left:var(--line-bold) solid var(--ink);background:color-mix(in srgb,var(--ink) 16%,transparent)}
 .mband .mtag{pointer-events:auto;position:absolute;left:-49px;top:0;width:40px;padding:2px 0;font:800 10px/1.3 var(--font-body);letter-spacing:.04em;text-align:center;background:var(--bg)}
-.mband .mlb{position:absolute;right:8px;bottom:4px;font:500 12px/1 var(--font-num);color:var(--muted)}
+.mband .mlb{position:absolute;left:10px;top:8px;font:800 14px/1 var(--font-body);color:var(--ink)}
+.mband .mlb i{font:500 13px/1 var(--font-num);font-style:normal;color:var(--muted);margin-left:8px}
 .jband{position:absolute;left:0;right:0;z-index:0;cursor:pointer}
 .empty{position:absolute;left:46px;right:0;padding:14px 16px;font-size:14px;color:var(--muted);line-height:1.7;
   background:var(--bg);border:var(--line-thin) solid var(--ink);border-top-width:var(--line-bold);z-index:3}
@@ -1145,7 +1147,7 @@ function fixedHTML(x){
   }
   if(x.f.meal){
     /* 식사: 블록이 아니라 띠. 그 위에 블록을 올릴 수 있음. 왼쪽 표를 누르면 수정 */
-    return `<div class="mband" style="top:${top}px;height:${h}px"><button class="jtag mtag" data-fid="${x.f.id}" aria-label="${esc(x.f.title)} 시간, 누르면 수정">${esc(x.f.title).slice(0, 3)}<br>${fmt(x.s)}</button><span class="mlb">${esc(x.f.title)} ${fmt(x.s)}–${fmt(x.s + x.d)}</span></div>`;
+    return `<div class="mband" style="top:${top}px;height:${h}px"><button class="jtag mtag" data-fid="${x.f.id}" aria-label="${esc(x.f.title)} 시간, 누르면 수정">${esc(x.f.title).slice(0, 3)}<br>${fmt(x.s)}</button><span class="mlb">${esc(x.f.title)}<i>${fmt(x.s)}–${fmt(x.s + x.d)}</i></span></div>`;
   }
   return `<div class="blk fixed${h < 58 ? ' compact' : ''}${h < 26 ? ' tiny' : ''}" data-fid="${x.f.id}" style="top:${top}px;height:${h}px;${x.pos || ''}">
     <div class="blk-body"><span class="title"><span>${esc(x.f.title)}</span></span>
@@ -1758,8 +1760,9 @@ statsEl.addEventListener('change', e => {
 
 /* ---------- 업데이트 내역 ----------
    새 버전을 올릴 때 APP_VERSION을 올리고 CHANGELOG 맨 앞에 한 줄 추가 */
-const APP_VERSION = '5.1';
+const APP_VERSION = '5.2';
 const CHANGELOG = [
+  {v:'5.2', d:'2026-10-29', t:'식사 시간을 반투명 면으로 채워 잘 보이게'},
   {v:'5.1', d:'2026-10-29', t:'가로 모드: 화면을 눕히면 왼쪽에 날짜·주간 줄·지금/메모와 탭바, 오른쪽에 타임라인'},
   {v:'5.0', d:'2026-10-29', t:'디자인 언어 v1.0으로 새 화면: 흑백 선과 열 정렬, 파랑은 오늘·진행·다음에만, 빨강은 지연·초과에만. 제목 명조·본문 고딕·숫자 Space Grotesk. 큰 날짜와 주간 줄, 하단 탭바, 진행률은 컨택트 맵으로. 과목은 색 대신 이름으로 구분하고, 어두운 모드는 검정 바탕 투사 모드'},
   {v:'4.2', d:'2026-10-21', t:'같은 시간에 수업과 고정 일정이 있으면 겹쳐 쓰이지 않고 나란히 보이게'},
